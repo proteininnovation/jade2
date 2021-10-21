@@ -1,0 +1,34 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+    </SCOREFXNS>
+    <RESIDUE_SELECTORS>
+        <Index name="select" resnums="%%start%%" />
+        <Index name="motif" resnums="%%start%%-%%end%%" />
+    </RESIDUE_SELECTORS>
+    <SIMPLE_METRICS>
+        <TotalEnergyMetric name="total_energy_delta" use_native="1"/>
+        <CompositeEnergyMetric name="composite_energy" use_native="1"/>
+        <SelectedResiduesMetric name="selection" residue_selector="select"/>
+		<SelectedResiduesMetric name="rosetta_sele" residue_selector="select" rosetta_numbering="1"/>
+		<SelectedResiduesPyMOLMetric name="pymol_selection" residue_selector="select" />
+        <SequenceMetric name="sequence" residue_selector="motif" />
+        <SasaMetric name="sasa" residue_selector="motif" />
+    </SIMPLE_METRICS>
+    <MOVERS>
+        <CreateGlycanSequonMover name="motif_creator" residue_selector="select" basic_enhanced_n_sequon="false" pack_neighbors="1"/>
+        <SimpleGlycosylateMover name="glycosylate" positions="%%resnum%%" glycosylation="man5" idealize_glycosylation="0" strip_existing="1"/>
+        <GlycanTreeRelax name="model"  />
+        <RunSimpleMetrics name="selections" metrics="selection,rosetta_sele,pymol_selection,sequence,sasa" prefix="pre_" />
+        <RunSimpleMetrics name="metrics1" metrics="total_energy_delta,composite_energy,sequence,sasa" prefix="post_" />
+        <RunSimpleMetrics name="metrics2" metrics="total_energy_delta,composite_energy" prefix="post-model_" />
+    </MOVERS>
+    <PROTOCOLS>
+        <Add mover="selections" />
+        <Add mover="motif_creator"/>
+        <Add mover="metrics1"/>
+        <Add mover="glycosylate"/>
+        <Add mover="model"/>
+        <Add mover="metrics2"/>
+    </PROTOCOLS>
+</ROSETTASCRIPTS>
+

@@ -1,0 +1,141 @@
+(dp0
+S'Python'
+p1
+(dp2
+S'Tkinter_Callback'
+p3
+(dp4
+Vdef appCallback(self, name, index, mode):\u000a
+p5
+VDefine Callback Function\u000a
+p6
+sVself.option.trace_variable('w', self.helpCallback)\u000a
+p7
+VTrace the given variable (w is for when it changes - 'r' is for when it is read by something.)\u000a
+p8
+ssS'File Out'
+p9
+(dp10
+VFILE.write("String")\u000a
+p11
+VYes, we always think we should use perl syntax..\u000a
+p12
+ssS'Tkinter_SimpleDialog'
+p13
+(dp14
+Vinitialvalue=x\u000a
+p15
+Vx is a string for ask string, integer for askinteger\u000a
+p16
+ssS'Tkinter_Menu'
+p17
+(dp18
+Vself.Help = Menu(self.main, tearoff=0)\u000a
+p19
+VCreate a New Menu\u000a
+p20
+sVself.MenBar.add_cascade(label = "Help", menu = self.Help)\u000a
+p21
+VAdd menu to main menu\u000a
+p22
+sVself.MenBar = Menu(self.main)\u000a
+p23
+VInitialize the Menu Bar\u000a
+p24
+sVself.main.config(menu=self.MenBar)\u000a
+p25
+VInitialize the Menu\u000a
+p26
+sVself.Help.add_command(label = "General")\u000a
+p27
+VAdd a new menu button\u000a
+p28
+ssS'Common Operations'
+p29
+(dp30
+Vos.mkdir(path)\u000a
+p31
+VEasy.\u000a
+p32
+sVos.system(do this)\u000a
+p33
+VRun program through shell\u000a
+p34
+ssS'Directories'
+p35
+(dp36
+Vfor root, dirs, files in os.walk(directory, topdown=True):\u000a
+p37
+VWalkes down the directory tree create a 3-tuple.  This code will allow you to look through it.\u000a
+p38
+sssS'Bash'
+p39
+(dp40
+S'I/O'
+p41
+(dp42
+Vcat > test.txt\u000a
+p43
+VCreates a new file, and pipes the next lines entered into it.  *Use Ctrl-D to signify end of file.
+p44
+sVwho | wc -l\u000a
+p45
+VWho's output becomes wc's input.  Pipe a to b while running b.\u000a
+p46
+ssS'Variables'
+p47
+(dp48
+VShell Script Arguments\u000a
+p49
+Vecho $1\u000aIf it's greater then 9 use ${10}\u000a
+p50
+sVGeneral\u000a
+p51
+Vfirst=isaac second=tom\u000afull="isaac and tom" *Whitespace\u000anames=$first$second\u000anames="$first $second"\u000a
+p52
+ssS'Printing'
+p53
+(dp54
+Vprintf "Hello \u005cn"\u000a
+p55
+VPrint for bash scripting.  Put variables as "blah %s %s" Hello World\u000a
+p56
+ssS'bug testing'
+p57
+(dp58
+Vset -x; set +x\u000a
+p59
+VTurn on, then turn off tracing in a shell script. Use sh -x ___ to use it at the beginning....\u000a
+p60
+ssS'Programs'
+p61
+(dp62
+Vwc\u000a
+p63
+VCounts number of lines, words, and charactors.  Use -l for lines.\u000a
+p64
+sVwho\u000a
+p65
+Vprints who is logged into the computer\u000a
+p66
+sssS'Tcl/Tk'
+p67
+(dp68
+sS'Matplotlib'
+p69
+(dp70
+S'Format'
+p71
+(dp72
+Vplt.grid(True)\u000a\u000a
+p73
+VTurn grid on.\u000a
+p74
+sVplt.plot(x, y, 'ro')\u000a
+p75
+VPlot with red circles - r, o\u000a
+p76
+sssS'Perl'
+p77
+(dp78
+s.

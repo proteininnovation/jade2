@@ -1,0 +1,167 @@
+(dp0
+S'Python'
+p1
+(dp2
+S'Tkinter_Callback'
+p3
+(dp4
+Vdef appCallback(self, name, index, mode):\u000a
+p5
+VDefine Callback Function\u000a
+p6
+sVself.option.trace_variable('w', self.helpCallback)\u000a
+p7
+VTrace the given variable (w is for when it changes - 'r' is for when it is read by something.)\u000a
+p8
+ssS'File In'
+p9
+(dp10
+S'line=line.rstrip()\n'
+p11
+VWill strip the newline charactor and any extra whitespace from the right.\u000a
+p12
+sVfor line in FILE:\u000a
+p13
+VIterate over each line in file\u000a
+p14
+sVFILE = open(path, 'w')\u000a
+p15
+VOpen File Handle\u000a
+p16
+ssS'Directories'
+p17
+(dp18
+Vfor root, dirs, files in os.walk(directory, topdown=True):\u000a
+p19
+VWalkes down the directory tree create a 3-tuple.  This code will allow you to look through it.\u000a
+p20
+sVfor filename in os.listdir(path)\u000a
+p21
+VGo through each filename found\u000a
+p22
+ssS'Dictionaries'
+p23
+(dp24
+Vif not dataDic.has_key(x): dataDic[x]=dict()\u000a
+p25
+VHow to tell if dictionary has been declared within the dictionary.\u000a
+p26
+ssS'Tkinter_SimpleDialog'
+p27
+(dp28
+Vinitialvalue=x\u000a
+p29
+Vx is a string for ask string, integer for askinteger\u000a
+p30
+ssS'Tkinter_Menu'
+p31
+(dp32
+Vself.Help = Menu(self.main, tearoff=0)\u000a
+p33
+VCreate a New Menu\u000a
+p34
+sVself.MenBar.add_cascade(label = "Help", menu = self.Help)\u000a
+p35
+VAdd menu to main menu\u000a
+p36
+sVself.MenBar = Menu(self.main)\u000a
+p37
+VInitialize the Menu Bar\u000a
+p38
+sVself.main.config(menu=self.MenBar)\u000a
+p39
+VInitialize the Menu\u000a
+p40
+sVself.Help.add_command(label = "General")\u000a
+p41
+VAdd a new menu button\u000a
+p42
+ssS'Common Operations'
+p43
+(dp44
+Vos.mkdir(path)\u000a
+p45
+VEasy.\u000a
+p46
+sVos.system(do this)\u000a
+p47
+VRun program through shell\u000a
+p48
+ssS'File Out'
+p49
+(dp50
+VFILE.write("String")\u000a
+p51
+VYes, we always think we should use perl syntax..\u000a
+p52
+sssS'Matplotlib'
+p53
+(dp54
+S'Format'
+p55
+(dp56
+Vplt.grid(True)\u000a\u000a
+p57
+VTurn grid on.\u000a
+p58
+sVplt.plot(x, y, 'ro')\u000a
+p59
+VPlot with red circles - r, o\u000a
+p60
+sssS'Tcl/Tk'
+p61
+(dp62
+sS'Bash'
+p63
+(dp64
+S'I/O'
+p65
+(dp66
+Vcat > test.txt\u000a
+p67
+VCreates a new file, and pipes the next lines entered into it.  *Use Ctrl-D to signify end of file.
+p68
+sVwho | wc -l\u000a
+p69
+VWho's output becomes wc's input.  Pipe a to b while running b.\u000a
+p70
+ssS'Variables'
+p71
+(dp72
+VShell Script Arguments\u000a
+p73
+Vecho $1\u000aIf it's greater then 9 use ${10}\u000a
+p74
+sVGeneral\u000a
+p75
+Vfirst=isaac second=tom\u000afull="isaac and tom" *Whitespace\u000anames=$first$second\u000anames="$first $second"\u000a
+p76
+ssS'Printing'
+p77
+(dp78
+Vprintf "Hello \u005cn"\u000a
+p79
+VPrint for bash scripting.  Put variables as "blah %s %s" Hello World\u000a
+p80
+ssS'bug testing'
+p81
+(dp82
+Vset -x; set +x\u000a
+p83
+VTurn on, then turn off tracing in a shell script. Use sh -x ___ to use it at the beginning....\u000a
+p84
+ssS'Programs'
+p85
+(dp86
+Vwc\u000a
+p87
+VCounts number of lines, words, and charactors.  Use -l for lines.\u000a
+p88
+sVwho\u000a
+p89
+Vprints who is logged into the computer\u000a
+p90
+sssS'Perl'
+p91
+(dp92
+s.

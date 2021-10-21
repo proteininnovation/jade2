@@ -1,0 +1,50 @@
+{
+  "exp": "all_no_H3_GD",
+  "nstruct": 100,
+  "dataset": {
+    "benchmarks": [
+      "bm3"
+    ],
+    "use_for_prefix": false,
+    "use_for_outdir": false
+  },
+  "remove_antigen": {
+    "rosetta_option": "-remove_antigen",
+    "benchmarks": [
+      false,
+      true
+    ]
+  },
+
+  "outer_cycles": {
+    "rosetta_option": "-outer_cycle_rounds",
+    "benchmarks": [
+      50,
+      100
+    ]
+  },
+
+  "dock": {
+    "rosetta_option": "-do_dock",
+    "benchmarks": [
+      true,
+      false
+    ]
+  },
+  "l_chain": {
+    "rosetta_option": "-light_chain",
+    "benchmarks": [
+      "kappa",
+      "lambda"
+    ],
+    "use_for_prefix": false,
+    "use_for_outdir": false
+  },
+  "mc_optimize_dG": {
+    "rosetta_option": "-mc_optimize_dG",
+    "benchmarks": [
+      false,
+      true
+    ]
+  }
+}

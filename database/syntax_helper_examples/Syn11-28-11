@@ -1,0 +1,222 @@
+(dp0
+S'Python'
+p1
+(dp2
+S'Tkinter_Callback'
+p3
+(dp4
+Vdef appCallback(self, name, index, mode):\u000a
+p5
+VDefine Callback Function\u000a
+p6
+sVself.option.trace_variable('w', self.helpCallback)\u000a
+p7
+VTrace the given variable (w is for when it changes - 'r' is for when it is read by something.)\u000a
+p8
+ssS'File In'
+p9
+(dp10
+S'line=line.rstrip()\n'
+p11
+VWill strip the newline charactor and any extra whitespace from the right.\u000a
+p12
+sVfor line in FILE:\u000a
+p13
+VIterate over each line in file\u000a
+p14
+sVFILE = open(path, 'w')\u000a
+p15
+VOpen File Handle\u000a
+p16
+ssS'File Out'
+p17
+(dp18
+VFILE.write("String")\u000a
+p19
+VYes, we always think we should use perl syntax..\u000a
+p20
+ssS'Dictionaries'
+p21
+(dp22
+Vif not dataDic.has_key(x): dataDic[x]=dict()\u000a
+p23
+VHow to tell if dictionary has been declared within the dictionary.\u000a
+p24
+sVrandom.choice(diction.keys())\u000a
+p25
+VChoose a random key from the dictionary.\u000a
+p26
+ssS'Tkinter_SimpleDialog'
+p27
+(dp28
+Vinitialvalue=x\u000a
+p29
+Vx is a string for ask string, integer for askinteger\u000a
+p30
+ssS'Directories'
+p31
+(dp32
+Vos.path.isdir(fullpath)\u000a
+p33
+VCheck if the thing your getting with os.listdir is a directory or a folder..\u000a
+p34
+sVfor root, dirs, files in os.walk(directory, topdown=True):\u000a
+p35
+VWalkes down the directory tree create a 3-tuple.  This code will allow you to look through it.\u000a
+p36
+sVfor filename in os.listdir(path)\u000a
+p37
+VGo through each filename found\u000a
+p38
+ssS'Tkinter_Menu'
+p39
+(dp40
+Vself.Help = Menu(self.main, tearoff=0)\u000a
+p41
+VCreate a New Menu\u000a
+p42
+sVself.MenBar.add_cascade(label = "Help", menu = self.Help)\u000a
+p43
+VAdd menu to main menu\u000a
+p44
+sVself.MenBar = Menu(self.main)\u000a
+p45
+VInitialize the Menu Bar\u000a
+p46
+sVself.main.config(menu=self.MenBar)\u000a
+p47
+VInitialize the Menu\u000a
+p48
+sVself.Help.add_command(label = "General")\u000a
+p49
+VAdd a new menu button\u000a
+p50
+ssS'Common Operations'
+p51
+(dp52
+Vos.mkdir(path)\u000a
+p53
+VEasy.\u000a
+p54
+sVos.system(do this)\u000a
+p55
+VRun program through shell\u000a
+p56
+ssS'Strings'
+p57
+(dp58
+V"%.2f"%(dataDic[pdb][mutation][protocols])\u000a
+p59
+VPrint to 2 decimal places\u000a
+p60
+sVz = a[1:5]; \u000a
+p61
+VReturn substring from index 1 to index 5\u000a
+p62
+sssS'Tcl/Tk'
+p63
+(dp64
+sS'C++'
+p65
+(dp66
+S'Libraries'
+p67
+(dp68
+V#include <iostream>\u000a
+p69
+VBasic IO\u000a
+p70
+ssS'Output'
+p71
+(dp72
+Vstd::cout << "Hello" << std:\uf701\uf701\uf701:endl;\u000a
+p73
+VPrints Hello and ends the line. std::cout << string also works if string is a variable.  << tells the string to be input into c out. "\u005cn" Also works.
+p74
+ssS'General'
+p75
+(dp76
+Vusing namespace std;\u000a
+p77
+VThis is a directive. Basically organizational layers of code.  So you could use std::cout << "print" instead if you wanted to...\u000a
+p78
+sVusing std::cout;\u000a
+p79
+Vmakes cout available as function name\u000a
+p80
+sV// We should do this...\u000a
+p81
+VComment\u000a
+p82
+sS'int main(void) {statements;return 0;}\n'
+p83
+Vfunction header.  int says that the function returns an integer.  In the parenthesis, put inputs to the function. void explicitly says NO ARGUMENTS.  All statements must be seperated by a ;SEMICOLON;
+p84
+sssS'Perl'
+p85
+(dp86
+sS'Matplotlib'
+p87
+(dp88
+S'Format'
+p89
+(dp90
+Vplt.grid(True)\u000a\u000a
+p91
+VTurn grid on.\u000a
+p92
+sVplt.plot(x, y, 'ro')\u000a
+p93
+VPlot with red circles - r, o\u000a
+p94
+sssS'Bash'
+p95
+(dp96
+S'I/O'
+p97
+(dp98
+Vcat > test.txt\u000a
+p99
+VCreates a new file, and pipes the next lines entered into it.  *Use Ctrl-D to signify end of file.
+p100
+sVwho | wc -l\u000a
+p101
+VWho's output becomes wc's input.  Pipe a to b while running b.\u000a
+p102
+ssS'Variables'
+p103
+(dp104
+VShell Script Arguments\u000a
+p105
+Vecho $1\u000aIf it's greater then 9 use ${10}\u000a
+p106
+sVGeneral\u000a
+p107
+Vfirst=isaac second=tom\u000afull="isaac and tom" *Whitespace\u000anames=$first$second\u000anames="$first $second"\u000a
+p108
+ssS'Printing'
+p109
+(dp110
+Vprintf "Hello \u005cn"\u000a
+p111
+VPrint for bash scripting.  Put variables as "blah %s %s" Hello World\u000a
+p112
+ssS'bug testing'
+p113
+(dp114
+Vset -x; set +x\u000a
+p115
+VTurn on, then turn off tracing in a shell script. Use sh -x ___ to use it at the beginning....\u000a
+p116
+ssS'Programs'
+p117
+(dp118
+Vwc\u000a
+p119
+VCounts number of lines, words, and charactors.  Use -l for lines.\u000a
+p120
+sVwho\u000a
+p121
+Vprints who is logged into the computer\u000a
+p122
+sss.

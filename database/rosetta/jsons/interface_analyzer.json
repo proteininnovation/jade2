@@ -1,0 +1,7 @@
+{ "program": "InterfaceAnalyzer",
+  "flags": [
+    "-out:file:score_only",
+    "-pack_separated true",
+    "-out:file:scorefile interface_score.sc"
+  ]
+}

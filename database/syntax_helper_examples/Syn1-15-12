@@ -1,0 +1,584 @@
+(dp0
+S'Python'
+p1
+(dp2
+S'Tkinter_Callback'
+p3
+(dp4
+Vdef appCallback(self, name, index, mode):\u000a
+p5
+VDefine Callback Function\u000a
+p6
+sVself.option.trace_variable('w', self.helpCallback)\u000a
+p7
+VTrace the given variable (w is for when it changes - 'r' is for when it is read by something.)\u000a
+p8
+ssS'File In'
+p9
+(dp10
+S'line=line.strip()\n'
+p11
+VI believe it removes all whitespace and return carriages..\u000a
+p12
+sS'line=line.rstrip()\n'
+p13
+VWill strip the newline charactor and any extra whitespace from the right.\u000a
+p14
+sVfor line in FILE:\u000a
+p15
+VIterate over each line in file\u000a
+p16
+sVFILE = open(path, 'w')\u000a
+p17
+VOpen File Handle\u000a
+p18
+ssS'File Out'
+p19
+(dp20
+VFILE.write("String")\u000a
+p21
+VYes, we always think we should use perl syntax..\u000a
+p22
+ssS'Dictionaries'
+p23
+(dp24
+Vif not dataDic.has_key(x): dataDic[x]=dict()\u000a
+p25
+VHow to tell if dictionary has been declared within the dictionary.\u000a
+p26
+sVrandom.choice(diction.keys())\u000a
+p27
+VChoose a random key from the dictionary.\u000a
+p28
+ssS'Tkinter_General'
+p29
+(dp30
+Vself.remHet.config(state=DISABLED)\u000a
+p31
+VDisable a checkbutton...and maybe anything else...\u000a
+p32
+ssS'Tkinter_Windows'
+p33
+(dp34
+VfixWindow = Toplevel(self.main)\u000a
+p35
+VNew main window to go under the main window\u000a
+p36
+ssS'Tkinter_SimpleDialog'
+p37
+(dp38
+Vinitialvalue=x\u000a
+p39
+Vx is a string for ask string, integer for askinteger\u000a
+p40
+ssS'Directories'
+p41
+(dp42
+Vos.path.isdir(fullpath)\u000a
+p43
+VCheck if the thing your getting with os.listdir is a directory or a folder..\u000a
+p44
+sVfor filename in os.listdir(path)\u000a
+p45
+VGo through each filename found\u000a
+p46
+sVfor root, dirs, files in os.walk(directory, topdown=True):\u000a
+p47
+VWalkes down the directory tree create a 3-tuple.  This code will allow you to look through it.\u000a
+p48
+sVif not os.path.exists(dir):os.mkdir(dir)\u000a
+p49
+V\u000a
+p50
+ssS'Tkinter_Menu'
+p51
+(dp52
+Vself.Help = Menu(self.main, tearoff=0)\u000a
+p53
+VCreate a New Menu\u000a
+p54
+sVself.MenBar.add_cascade(label = "Help", menu = self.Help)\u000a
+p55
+VAdd menu to main menu\u000a
+p56
+sVself.MenBar = Menu(self.main)\u000a
+p57
+VInitialize the Menu Bar\u000a
+p58
+sVself.main.config(menu=self.MenBar)\u000a
+p59
+VInitialize the Menu\u000a
+p60
+sVself.Help.add_command(label = "General")\u000a
+p61
+VAdd a new menu button\u000a
+p62
+ssS'Common Operations'
+p63
+(dp64
+Vos.mkdir(path)\u000a
+p65
+VEasy.\u000a
+p66
+sVos.system(do this)\u000a
+p67
+VRun program through shell\u000a
+p68
+ssS'Strings'
+p69
+(dp70
+V"%.2f"%(dataDic[pdb][mutation][protocols])\u000a
+p71
+VPrint to 2 decimal places\u000a
+p72
+sVz = a[1:5]; \u000a
+p73
+VReturn substring from index 1 to index 5\u000a
+p74
+sssS'Tcl/Tk'
+p75
+(dp76
+sS'C++'
+p77
+(dp78
+S'General'
+p79
+(dp80
+Vusing namespace std;\u000a
+p81
+VThis is a directive. Basically organizational layers of code.  So you could use std::cout << "print" instead if you wanted to...\u000a
+p82
+sS'int main(void) {statements;return 0;}\n'
+p83
+Vfunction header.  int says that the function returns an integer.  In the parenthesis, put inputs to the function. void explicitly says NO ARGUMENTS.  All statements must be seperated by a ;SEMICOLON;
+p84
+sVbit info\u000a
+p85
+Vbit^2 = # of possible combinations.\u000a
+p86
+sVInteresting Assignment Properties\u000a
+p87
+Vlong x = 1000\u000ashort y = 10\u000a\u000ax = y; 10 gets turned into a long value....\u000a
+p88
+sV// We should do this...\u000a
+p89
+VComment\u000a
+p90
+sVusing std::cout;\u000a
+p91
+Vmakes cout available as function name\u000a
+p92
+sVreturn 14 *sts\u000a
+p93
+VYes, you CAN do this.\u000a
+p94
+sVEscape Sequences\u000a
+p95
+V\u005cn\u000a\u005c" (insert a quote)\u000a\u005cb (move curser back 1)\u000a
+p96
+ssS'Libraries'
+p97
+(dp98
+V#include <cmath>\u000a
+p99
+Vdouble sqrt()\u000adouble pow(double, double) [x^y]
+p100
+sV#include <climits>\u000a
+p101
+VINT_MAX\u000aSHORT_MAX\u000aLONG_MAX\u000a--Maximum value of integer types on your system--\u000a\u000aint sizeof (type)\u000a--# of bytes of memory the type holds.\u000a
+p102
+sS'#include <string>\n'
+p103
+Vstring str1 = "Hello"\u000ax = str1[2]; (prints l)\u000astr1=str2\u000astr1 = str2 +"Hello"; str1+=str2\u000a\u000aint len1 = str1.size()\u000a\u000a\u000a\u000a\u000a\u000a
+p104
+sV#include <cstring>\u000a
+p105
+Vstrlen()\u000a-->Note it does not include the '\u005c0' part of the string.  \u000a\u000a\u000a\u000a
+p106
+sV#include <iostream>\u000a
+p107
+Vcin\u000a-->Will only work with phrases without spaces\u000a-->LEAVES newline charactor\u000acout\u000acout.setf(ios_base::fixed, ios_base::floatfield)\u000a ->Force no e notation\u000a\u000acin.getline(arrayName, maxArraySize)\u000a-->Read until and including newline. \u000a-> CAN do cin.getline(x, y).getline(z,y)\u000acin.get()\u000a-->LEAVES newline charactor\u000a->cin.get(name, ArSize).get()\u000a\u000a\u000a
+p108
+sV#include <stdlib>\u000a
+p109
+Vint rand(void)\u000a\u000a
+p110
+ssS'Compiling'
+p111
+(dp112
+Vg++ xxx.cc xxx.o\u000a
+p113
+V\u000a
+p114
+sVg++ xxx.cc -lm\u000a
+p115
+VTells compiler to search form library math...\u000a
+p116
+ssS'Output'
+p117
+(dp118
+Vstd::cout << "Hello" << std:\uf701\uf701\uf701:endl;\u000a
+p119
+VPrints Hello and ends the line. std::cout << string also works if string is a variable.  << tells the string to be input into c out. "\u005cn" Also works.
+p120
+ssS'Test'
+p121
+(dp122
+sS'Input'
+p123
+(dp124
+Vcin << carrots;\u000a
+p125
+VTakes a user command into the program.  Awesome. Simple.\u000a
+p126
+ssS'Math'
+p127
+(dp128
+VGeneral\u000a
+p129
+V+\u000a-\u000a/\u000a*\u000a% (Modulus) Returns remainder. (Only works on integers)
+p130
+sssS'Perl'
+p131
+(dp132
+S'Functions'
+p133
+(dp134
+S'$x = split /\\./ , $string\n'
+p135
+VSplit String\u000a
+p136
+sV$x = substr($s, 4, 2);\u000a
+p137
+VFrom 4, length 2\u000a
+p138
+sVif (-e "____.txt")\u000a
+p139
+VIf the file exists....\u000a
+p140
+sVif (-d /xx/xx)\u000a
+p141
+VCheck if directory exists..\u000a
+p142
+sVmkdir "${destination}/{$name} or die "folder cannot be created.."\u000a
+p143
+VMake directory within perl.\u000a
+p144
+sV@recFiles = glob "*.pdb";\u000a
+p145
+V\u000a
+p146
+sVchdir "$recDir" or die "cannot chdir to recDir $!";\u000a
+p147
+VChange directory.\u000a
+p148
+ssS'Arrays'
+p149
+(dp150
+Vpop @Array\u000a
+p151
+VTakes Array off end\u000a
+p152
+sVunshift @Array, $element\u000a
+p153
+VPut element at beginning\u000a
+p154
+sVshift @Array\u000a
+p155
+VTake off beginning\u000a
+p156
+sVpush @Array, $element;\u000a
+p157
+VPut at end\u000a
+p158
+ssS'PDBs'
+p159
+(dp160
+VChain\u000a
+p161
+Vsubstr($_, 21, 1)\u000a
+p162
+ssS'General'
+p163
+(dp164
+V($Path, $FileOut) = @ARGV;\u000a
+p165
+VArguments in.\u000a
+p166
+sV#!/usr/bin/perl\u000a
+p167
+VHeader\u000a
+p168
+sVif ($psi>-100 && $psi<=50) {$conf="A";}\u000a
+p169
+VIf statement\u000a
+p170
+sS'%ConformationalHash = ();'
+p171
+VCreate Hash\u000a
+p172
+ssS'Output'
+p173
+(dp174
+Vprint FILEOUT "$out\u005ct$conf\u005ct$ConformationalHash{$conf}\u005cn"\u000a
+p175
+VPrint to file.\u000a
+p176
+ssS'Loops'
+p177
+(dp178
+Vfor $dir (@Dir){print $dir;}\u000a
+p179
+VFor loop over an array\u000a
+p180
+sVfor ($count=1; $count<11; $count++)\u000a
+p181
+VCounts...\u000a
+p182
+sVlast;\u000a
+p183
+VJump out of current loop\u000a
+p184
+sVif ($element =~ /$filename/)\u000a
+p185
+VMatches for filename...\u000a
+p186
+ssS'Input'
+p187
+(dp188
+VFiles\u000a
+p189
+Vopen FILEOUT, ">$FileOut";\u000aopen FILEOUT, ">>$FIleout"; (Existing file)\u000a\u000a\u000a\u000a\u000a\u000a\u000a
+p190
+sVDirectories\u000a
+p191
+Vopendir FILE, "$Path";\u000a@Dir = readdir(FILE);\u000a@Dir = grep ($_ ne '.', @Dir);\u000a@Dir = grep ($_ ne '..', @Dir);\u000afor $dir (@Dir){\u000a	print $dir;}\u000a\u000aOR\u000a\u000awhile (my $file = readdir($dir)){\u000a	next unless (-f "$dir/$file");\u000a	next unless (-f $file =~ m/\u005c.txt$/);\u000a\u000a\u000a\u000a\u000a\u000a
+p192
+ssS'Hashes'
+p193
+(dp194
+Vforeach $key2 (keys %($positionDic{$key}}){\u000a
+p195
+VHash of hash - I think there is a better way to do it...\u000a
+p196
+sV%hash = ();\u000a
+p197
+VCreate Hash\u000a
+p198
+sV@array = @{$PDBDic{$key}};\u000a
+p199
+VGrab the array from hash..?\u000a
+p200
+ssS'Strings'
+p201
+(dp202
+V$file = uc($file);\u000a
+p203
+VMake everything Caps\u000a
+p204
+sV$file = lc ($stri);\u000a
+p205
+VMake everything Lower case\u000a
+p206
+sssS'Program Usage'
+p207
+(dp208
+S'Remote Access'
+p209
+(dp210
+Vssh jadolfbr@jadolfbr.ritf.fccc.edu\u000a
+p211
+VLog into lab CPU\u000a
+p212
+ssS'Unix'
+p213
+(dp214
+Vtar -cf xxx.tar File/DIR\u000a
+p215
+VCreate a tar archive.\u000a
+p216
+ssS'Cluster Paths'
+p217
+(dp218
+VRosetta Database\u000a
+p219
+V/common/madsci/Modeling/Rosetta/Rosetta3.3/rosetta_database\u000a
+p220
+sVProjects\u000a
+p221
+V/common/madsci/Projects\u000a
+p222
+sVRosettaTools\u000a
+p223
+V/common/madsci/Modeling/RosettaTools\u000a
+p224
+ssS'Programs'
+p225
+(dp226
+VGrep Columns\u000a
+p227
+Vcat file | cut -d ",", -f 1,2\u000a\u000a"," is the delimiter.\u000aSays to grab columns one and 2 after seperating by the delimiter\u000a
+p228
+sssS'Matplotlib'
+p229
+(dp230
+S'Format'
+p231
+(dp232
+Vplt.grid(True)\u000a\u000a
+p233
+VTurn grid on.\u000a
+p234
+sVplt.plot(x, y, 'ro')\u000a
+p235
+VPlot with red circles - r, o\u000a
+p236
+sssS'Tamil'
+p237
+(dp238
+S'Greetings'
+p239
+(dp240
+VVa\u000a
+p241
+VCome\u000a
+p242
+sS'Epadi Erka(n)(ga)'
+p243
+VHello\u000a
+p244
+sVInga Va\u000a
+p245
+VHere, Come\u000a
+p246
+sssS'PDB Parsing'
+p247
+(dp248
+S'Parsing Data'
+p249
+(dp250
+VColumn widths, etc.\u000a
+p251
+V                       pdbDic[i]["atomNumber"]=line[6:11].strip()\u000apdbDic[i]["atomName"] = line[11:16].strip()                   pdbDic[i]["alternateLocation"]=line[16].strip()\u000apdbDic[i]["ResName"] = line[17:21].strip()\u000apdbDic[i]["chain"] = line[21].strip()\u000apdbDic[i]["resNum"]= line[22:26].strip()\u000apdbDic[i]["iCode"] = line[26].strip()\u000apdbDic[i]["x"] = line[27:38].strip()\u000apdbDic[i]["y"]= line[38:46].strip()\u000apdbDic[i]["z"]= line[46:54].strip()\u000apdbDic[i]["occupancy"] = line[54:60].strip()\u000a                       pdbDic[i]["Bfactor"]=line[60:66].strip()\u000a                        pdbDic[i]["element"]=line[66:78].strip()\u000a                        pdbDic[i]["charge"]=line[78:79].strip()
+p252
+sssS'Bash'
+p253
+(dp254
+S'I/O'
+p255
+(dp256
+Vcat > test.txt\u000a
+p257
+VCreates a new file, and pipes the next lines entered into it.  *Use Ctrl-D to signify end of file.
+p258
+sVwho | wc -l\u000a
+p259
+VWho's output becomes wc's input.  Pipe a to b while running b.\u000a
+p260
+ssS'Variables'
+p261
+(dp262
+VShell Script Arguments\u000a
+p263
+Vecho $1\u000aIf it's greater then 9 use ${10}\u000a
+p264
+sVGeneral\u000a
+p265
+Vfirst=isaac second=tom\u000afull="isaac and tom" *Whitespace\u000anames=$first$second\u000anames="$first $second"\u000a
+p266
+ssS'Printing'
+p267
+(dp268
+Vprintf "Hello \u005cn"\u000a
+p269
+VPrint for bash scripting.  Put variables as "blah %s %s" Hello World\u000a
+p270
+ssS'bug testing'
+p271
+(dp272
+Vset -x; set +x\u000a
+p273
+VTurn on, then turn off tracing in a shell script. Use sh -x ___ to use it at the beginning....\u000a
+p274
+ssS'Programs'
+p275
+(dp276
+Vwc\u000a
+p277
+VCounts number of lines, words, and charactors.  Use -l for lines.\u000a
+p278
+sVwho\u000a
+p279
+Vprints who is logged into the computer\u000a
+p280
+sssS'Matlab'
+p281
+(dp282
+S'Files'
+p283
+(dp284
+VA = fscanf(FILE, format)\u000a
+p285
+VText file to Array A.  \u000aformat: '%d%i%ld'\u000a%f = floating point.\u000a%s = string\u000a%c = single charactors including whitespace..\u000a
+p286
+sVFILE = fopen(filename, 'r')\u000a
+p287
+VOpen File (Same as Python)\u000a
+p288
+sVline = fgetl(FILE)\u000a
+p289
+VRead line from file, removing newline characters\u000a
+p290
+sVSAVEAS(H,'FILENAME','FORMAT')\u000a
+p291
+VH is the handle of the figure.  Format can be 'fig' or 'jpg' 'bmp' etc.\u000a
+p292
+sVwhile ischar(line)\u000a	line = fgetl(FILE);\u000aEND\u000a
+p293
+VWay to read in lines from a file...\u000a
+p294
+sV[pathstr,name,ext]=fileparts(filename)\u000a
+p295
+VSplit a file string\u000a
+p296
+ssS'Arrays'
+p297
+(dp298
+VArray(1) = 10; Array(2) = 10\u000a
+p299
+VArray of 10 10...  Don't need to declare the array as in python.\u000a
+p300
+ssS'Directories'
+p301
+(dp302
+Vlisting = ([directory '/*.txt'])\u000afile = [directory '/' listing[i].name]\u000a
+p303
+VGet a listing structure array, then list the file in the array.\u000a
+p304
+sVmkdir('directoryname')\u000a
+p305
+VCreates the directory.\u000a
+p306
+ssS'Strings'
+p307
+(dp308
+Vstring = [variable '/hello.txt']\u000a
+p309
+VConcatonate a string..\u000a
+p310
+ssS'Plotting'
+p311
+(dp312
+Vsaveas(fig, 'figureH.jpg')\u000a
+p313
+VSaves the fig as a jpg. can also do .bmp, etc.  Can also do - saveas(fig, 'figureH', 'jpg' \u000aNOTE - SAVE .fig LAST, or you will get an error!\u000a
+p314
+sVf = figure('visible','off')\u000a
+p315
+VDo not show figure - Useful when you just need to save a bunch of images\u000a
+p316
+sVfig = figure\u000a
+p317
+Vcreate a current figure...\u000a
+p318
+sss.

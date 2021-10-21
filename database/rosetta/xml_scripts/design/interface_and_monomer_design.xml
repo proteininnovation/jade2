@@ -1,0 +1,125 @@
+<ROSETTASCRIPTS>
+
+<SCOREFXNS>
+
+	<ScoreFunction name="sfxn_design" weights="beta">
+	</ScoreFunction>
+
+	<ScoreFunction name="sfxn_evaluate" weights="beta"/>
+
+</SCOREFXNS>
+
+
+<RESIDUE_LEVEL_TASK_OPERATIONS>
+
+	<PreventRepackingRLT name="prevent_repacking"/>
+	<RestrictToRepackingRLT name="restrict_to_repacking"/>
+	<IncludeCurrentRLT name="include_current_rotamers"/>
+	<ExtraRotamersGenericRLT name="ex1aro_rotamers" ex1aro="True"/>
+	<ExtraRotamersGenericRLT name="ex1_ex2_rotamers" ex1="True" ex2="True"/>
+
+</RESIDUE_LEVEL_TASK_OPERATIONS>
+
+
+<RESIDUE_SELECTORS>
+	
+	<True name="the_whole_pose" />
+
+	<!-- layer design -->
+	<Layer name="surface" select_core="false" select_boundary="false" select_surface="true" use_sidechain_neighbors="true"/>
+	<Layer name="boundary" select_core="false" select_boundary="true" select_surface="false" use_sidechain_neighbors="true"/>
+	<Layer name="core" select_core="true" select_boundary="false" select_surface="false" use_sidechain_neighbors="true"/>
+	<SecondaryStructure name="sheet" overlap="0" minH="3" minE="2" include_terminal_loops="false" use_dssp="true" ss="E"/>
+	<SecondaryStructure name="entire_loop" overlap="0" minH="3" minE="2" include_terminal_loops="true" use_dssp="true" ss="L"/>
+	<SecondaryStructure name="entire_helix" overlap="0" minH="3" minE="2" include_terminal_loops="false" use_dssp="true" ss="H"/>
+	<And name="helix_cap" selectors="entire_loop">
+		<PrimarySequenceNeighborhood lower="1" upper="0" selector="entire_helix"/>
+	</And>
+	<And name="helix_start" selectors="entire_helix">
+		<PrimarySequenceNeighborhood lower="0" upper="1" selector="helix_cap"/>
+	</And>
+	<And name="helix" selectors="entire_helix">
+		<Not selector="helix_start"/>
+	</And>
+	<And name="loop" selectors="entire_loop">
+		<Not selector="helix_cap"/>
+	</And>
+
+	<!-- interface -->
+	<Chain name="binder" chains="A"/>
+	<Chain name="target" chains="B"/>
+	<!-- the grp1 and grp2 selectors must be assigned in the same order that the chains appear in the pose-->
+	<InterfaceByVector name="interface" grp1_selector="binder" grp2_selector="target"/>
+
+</RESIDUE_SELECTORS>
+
+
+<MOVE_MAP_FACTORIES>
+
+        <MoveMapFactory name="design_movemap" bb="true" chi="true" jumps="false" >
+                <Backbone enable="false" residue_selector="target" />
+                <Chi enable="false" residue_selector="(NOT interface) AND target" />
+        </MoveMapFactory>
+
+</MOVE_MAP_FACTORIES>
+
+
+<TASKOPERATIONS>
+
+	<LimitAromaChi2 name="limitchi2" include_trp="1" />
+
+	<DesignRestrictions name="design_task">
+
+		<!-- global task operations -->
+		<Action residue_selector="the_whole_pose"                               residue_level_operations="include_current_rotamers"/>
+		
+		<!-- it is reccomended to disallow Met and Trp when designing extracellular proteins -->
+		<Action residue_selector="the_whole_pose"                               aas="ADEFGHIKLNPQRSTVY"/>
+
+		<!-- this is the standard design task -->
+		<Action selector_logic="(NOT interface) AND (surface AND helix_start)"  aas="DEHKPQR"/>
+		<Action selector_logic="(NOT interface) AND (surface AND helix)"        aas="EKQR"/>
+		<Action selector_logic="(NOT interface) AND (surface AND sheet)"        aas="EKNQRST"/>
+		<Action selector_logic="(NOT interface) AND (surface AND loop)"         aas="DEGHKNPQRST"/>
+		<Action selector_logic="(NOT interface) AND (boundary AND helix_start)" aas="ADEHIKLMNPQRSTVWY"/>
+		<Action selector_logic="(NOT interface) AND (boundary AND helix)"       aas="ADEHIKLMNQRSTVWY"/>
+		<Action selector_logic="(NOT interface) AND (boundary AND sheet)"       aas="DEFHIKLMNQRSTVWY"/>
+		<Action selector_logic="(NOT interface) AND (boundary AND loop)"        aas="ADEFGHIKLMNPQRSTVWY"/>
+		<Action selector_logic="(NOT interface) AND (core AND helix_start)"     aas="AFILMPVW"/>
+		<Action selector_logic="(NOT interface) AND (core AND helix)"           aas="AFILMVW"/>
+		<Action selector_logic="(NOT interface) AND (core AND sheet)"           aas="FILMVW"/>
+		<Action selector_logic="(NOT interface) AND (core AND loop)"            aas="AFGILMPVW"/>
+		<Action selector_logic="(NOT interface) AND helix_cap"                  aas="DNST"/>
+
+		<!-- interface design task -->
+		<Action residue_selector="interface"                                    residue_level_operations="ex1_ex2_rotamers"/>
+		<Action selector_logic="NOT interface"                                  residue_level_operations="ex1aro_rotamers"/>
+		<Action selector_logic="target"                                         residue_level_operations="restrict_to_repacking"/>
+		<Action selector_logic="(NOT interface) AND target"                     residue_level_operations="prevent_repacking"/>
+		<Action selector_logic="interface AND helix_start"                      aas="ADEHIKLMNPQRSTVWY"/>
+		<Action selector_logic="interface AND helix"                            aas="ADEHIKLMNQRSTVWY"/>
+		<Action selector_logic="interface AND sheet"                            aas="DEFHIKLMNQRSTVWY"/>
+		<Action selector_logic="interface AND loop"                             aas="ADEFGHIKLMNPQRSTVWY"/>
+		<Action selector_logic="interface AND helix_cap"                        aas="DNST"/>
+
+	</DesignRestrictions>
+	
+</TASKOPERATIONS>
+
+<FILTERS>
+</FILTERS>
+
+<MOVERS>
+	<Dssp name="dssp"/>
+	<FastDesign name="relax_design" scorefxn="sfxn_design" movemap_factory="design_movemap" repeats="3" task_operations="limitchi2,design_task" relaxscript="MonomerDesign2019"/>
+</MOVERS>
+
+
+<PROTOCOLS>
+	<Add mover_name="dssp"/> 
+	<Add mover_name="relax_design"/>
+</PROTOCOLS>
+
+<OUTPUT scorefxn="sfxn_evaluate"/>
+
+</ROSETTASCRIPTS>

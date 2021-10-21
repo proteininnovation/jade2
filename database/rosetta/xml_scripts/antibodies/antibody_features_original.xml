@@ -1,0 +1,24 @@
+<ROSETTASCRIPTS>
+	<SCOREFXNS>
+		<ScoreFunction name="s" weights="%%score%%"/>
+	</SCOREFXNS>
+	<MOVERS>
+		<ReportToDB name="features" database_name="%%name%%.%%score%%.db3" batch_description="%%batch%%">
+			<ResidueFeatures/>
+			<PdbDataFeatures/>
+			<ResidueTypesFeatures/>
+			<ScoreTypeFeatures/>
+                	<StructureScoresFeatures scorefxn="s"/>
+			<CDRClusterFeatures input_ab_scheme="AHO_Scheme"/>
+			<AntibodyFeatures scorefxn="s" input_ab_scheme="AHO_Scheme" cdr_definition="North" interface="LH_A" pack_separated="false" pack_together="true"/>
+			<ResidueSecondaryStructureFeatures/>
+			<ResidueScoresFeatures scorefxn="s"/>
+			<HBondFeatures scorefxn="s"/>
+			<SaltBridgeFeatures/>
+			<ResidueBurialFeatures/>
+		</ReportToDB>
+	</MOVERS>
+	<PROTOCOLS>
+		<Add mover_name="features"/>
+	</PROTOCOLS>
+</ROSETTASCRIPTS>

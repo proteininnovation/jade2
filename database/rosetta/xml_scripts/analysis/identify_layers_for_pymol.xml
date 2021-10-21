@@ -1,0 +1,53 @@
+<ROSETTASCRIPTS>
+
+	<SCOREFXNS>
+	</SCOREFXNS>
+
+	<RESIDUE_SELECTORS>
+
+		<!-- use_sidechain_neighbors="true" -->
+		<Layer name="surface_sidechain_neighbors" select_core="false" select_boundary="false" select_surface="true" use_sidechain_neighbors="true"/>
+		<Layer name="boundary_sidechain_neighbors" select_core="false" select_boundary="true" select_surface="false" use_sidechain_neighbors="true"/>
+		<Layer name="core_sidechain_neighbors" select_core="true" select_boundary="false" select_surface="false" use_sidechain_neighbors="true"/>
+
+		<!-- use_sidechain_neighbors="false" -->
+		<Layer name="surface_SASA" select_core="false" select_boundary="false" select_surface="true" use_sidechain_neighbors="false"/>
+		<Layer name="boundary_SASA" select_core="false" select_boundary="true" select_surface="false" use_sidechain_neighbors="false"/>
+		<Layer name="core_SASA" select_core="true" select_boundary="false" select_surface="false" use_sidechain_neighbors="false"/>
+
+	</RESIDUE_SELECTORS>
+
+	<SIMPLE_METRICS>
+
+		<!-- use_sidechain_neighbors="true" -->
+		<SelectedResiduesPyMOLMetric name="surface_sidechain_neighbors_metric" residue_selector="surface_sidechain_neighbors" custom_type="surface_sidechain_neighbors"/>
+		<SelectedResiduesPyMOLMetric name="boundary_sidechain_neighbors_metric" residue_selector="boundary_sidechain_neighbors" custom_type="boundary_sidechain_neighbors"/>
+		<SelectedResiduesPyMOLMetric name="core_sidechain_neighbors_metric" residue_selector="core_sidechain_neighbors" custom_type="core_sidechain_neighbors"/>
+
+		<!-- use_sidechain_neighbors="false" -->
+		<SelectedResiduesPyMOLMetric name="surface_SASA_metric" residue_selector="surface_SASA" custom_type="_surface_SASA"/>
+		<SelectedResiduesPyMOLMetric name="boundary_SASA_metric" residue_selector="boundary_SASA" custom_type="_boundary_SASA"/>
+		<SelectedResiduesPyMOLMetric name="core_SASA_metric" residue_selector="core_SASA" custom_type="_core_SASA"/>
+
+	</SIMPLE_METRICS>
+
+
+	<TASKOPERATIONS>
+	</TASKOPERATIONS>
+
+	<FILTERS>
+	</FILTERS>
+
+	<MOVERS>
+
+		<RunSimpleMetrics name="run_metrics" metrics="surface_sidechain_neighbors_metric,boundary_sidechain_neighbors_metric,core_sidechain_neighbors_metric,surface_SASA_metric,boundary_SASA_metric,core_SASA_metric" />
+
+	</MOVERS>
+
+	<PROTOCOLS>
+
+		<Add mover_name="run_metrics"/>
+
+	</PROTOCOLS>
+
+</ROSETTASCRIPTS>
