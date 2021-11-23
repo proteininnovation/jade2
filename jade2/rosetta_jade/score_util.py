@@ -87,10 +87,10 @@ def parse_decoy_scores(decoy_path):
     for line in INFILE:
         if line.startswith("#BEGIN_POSE_ENERGIES_TABLE"):
             lineSP = line.split()
-            if len(lineSP) == 1:
-                data['decoy'] = get_decoy_name( os.path.basename(decoy_path) )
-            else:
-                data['decoy'] = get_decoy_name( lineSP[-1] )
+            #if len(lineSP) == 1:
+            data['decoy'] = get_decoy_name( os.path.basename(decoy_path) )
+            #else:
+            #    data['decoy'] = get_decoy_name( lineSP[-1] )
 
         elif line.startswith("label"):
             labels = line.split()[1:]
