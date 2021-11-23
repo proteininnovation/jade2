@@ -1,5 +1,4 @@
 import sys,itertools,re, datetime
-import dill as pickle
 #import pickle
 
 from jade2.basic.path import open_file

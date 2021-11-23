@@ -203,8 +203,8 @@ class DashPlot:
 
     # New Figures go here
     def make_scatter(self,x, y, color, facet_col, facet_row, marginal_x, marginal_y, size, trendline, style, colorscale, fs):
-        if not trendline:
-            trendline = "Off"
+        if not trendline or trendline == "Off":
+            trendline = None
 
         #Try/except for the statsmodels package that doesn't seem to be installed automatically.
 
@@ -634,7 +634,8 @@ def apply_layout(app, df_columns: List[str]):
                 dbc.Col(html.P([dcc.Dropdown(id=d, options=[dict(label=x, value=x) for x in DashPlot.style_options[d]], placeholder=d)]))
                 for d in DashPlot.style_options
             ],
-            no_gutters=True, style={'padding-left':'70%'},
+            #Had to remove no_gutters=True,
+            style={'padding-left':'70%'},
         ),
 
         html.Div([
