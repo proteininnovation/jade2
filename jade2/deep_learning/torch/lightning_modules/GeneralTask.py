@@ -78,7 +78,7 @@ class GeneralTask(pl.LightningModule):
         General learning step. Returns loss, prediction, labels
         """
         bg, labels = batch
-        prediction = self.model(bg)
+        prediction = self.forward(bg)
         loss = self.loss_fn(prediction, labels)
 
         if self.classifier:
