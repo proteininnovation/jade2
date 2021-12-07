@@ -452,7 +452,7 @@ class DashPlot:
                 sele.append(" ".join(lineSP[1:]))
         cmd = ";".join(sele)
         cmd+=";deselect"
-        os.system('pymol '+outdir+"/"+pdb_path_new+f" -d '{cmd}' &")
+        os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}"+f" -d '{cmd}' &")
 
     def copy_decoys(self, x, y, selection, z = None):
         #print("args:",args)
@@ -568,6 +568,9 @@ class DashPlot:
                     scripter.add_align_to(new_name, first_name)
                     scripter.add_line("center "+new_name)
                 first = False
+
+            if native and os.path.exists(native):
+                scripter.add_load_pdb("native", native)
 
             #scripter.add_show("sticks")
             #scripter.add_hide("(hydro)")
@@ -696,6 +699,9 @@ def get_options():
                         default= "sequence",
                         help = "Sequence column used for calculating MW if present. ")
 
+    parser.add_argument("--native",
+                        help = "Load the native pose along with the designs")
+
     options = parser.parse_args()
     return options
 
@@ -758,6 +764,11 @@ if __name__ == "__main__":
     app.title = "Jade IAE"
 
     options = get_options()
+
+    global native
+    native = options.native
+    print("NATIVE: ",native)
+
 
     hover_name="decoy_path"
     if options.scorefile == "test":

@@ -21,7 +21,7 @@
         	<TotalEnergyMetric name="total_energy_delta" reference_name="pre_design_pose" custom_type="delta"/>
         	<TotalEnergyMetric name="total_energy_delta_native" use_native="1" custom_type="delta-native"/>
         	<SelectedResiduesMetric name="selection" residue_selector="design_positions"/>
-		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1"/>
+		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1" custom_type="rosetta"/>
 		<SelectedResiduesPyMOLMetric name="pymol_selection" residue_selector="design_positions" />
         	<SelectedResiduesPyMOLMetric name="region" residue_selector="all_focus" custom_type="region"/>
         	<SequenceMetric name="sequence" residue_selector="design_positions" />
