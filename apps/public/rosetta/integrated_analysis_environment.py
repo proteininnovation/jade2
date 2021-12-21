@@ -452,7 +452,11 @@ class DashPlot:
                 sele.append(" ".join(lineSP[1:]))
         cmd = ";".join(sele)
         cmd+=";deselect"
-        os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}"+f" -d '{cmd}' &")
+        #os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}f"+f" -d '{cmd}' &")
+        if native:
+            os.system('pymol ' + outdir + "/" + pdb_path_new + f" {native}" + f" -d '{cmd}' &")
+        else:
+            os.system('pymol ' + outdir + "/" + pdb_path_new + f" -d '{cmd}' &")
 
     def copy_decoys(self, x, y, selection, z = None):
         #print("args:",args)
@@ -793,6 +797,9 @@ if __name__ == "__main__":
         else:
             df = scores.get_dataframe(score_path, set_index=False)
         df['subset'] = subset_name
+
+    #Sort columns
+    df = df.reindex(sorted(df.columns), axis=1)
 
     #Used for classifiers:
     if 'accuracy' in df.columns:

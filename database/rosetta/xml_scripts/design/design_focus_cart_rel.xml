@@ -1,64 +1,103 @@
 <ROSETTASCRIPTS>
 	<SCOREFXNS>
-        	<ScoreFunction name="cart" weights="beta_cart" symmetric="0">
-            	<!--Reweight scoretype="dihedral_constraint" weight=".3" /!-->
-            	<Reweight scoretype="coordinate_constraint" weight="1.0"/>
-        	</ScoreFunction>
+		<ScoreFunction name="cart" weights="beta_cart" symmetric="0">
+			<!--Reweight scoretype="dihedral_constraint" weight=".3" /!-->
+			<Reweight scoretype="coordinate_constraint" weight="1.0"/>
+		</ScoreFunction>
 	</SCOREFXNS>
 	<RESIDUE_SELECTORS>
 		<Index name="design_positions" resnums="%%positions%%"/>
-        	<Neighborhood name="nbrhood" selector="design_positions" include_focus_in_subset="0"/>
-        	<Neighborhood name="all_focus" selector="design_positions"/>
-        	<Not name="others" selector="all_focus" />
+		<Neighborhood name="nbrhood" selector="design_positions" include_focus_in_subset="0" distance="%%pack_radius%%"/>
+		<Not name="others" selector="design_positions OR nbrhood" />
+
+		<SecondaryStructure name="entire_loop" overlap="0" minH="3" minE="2" include_terminal_loops="true" use_dssp="true" ss="L"/>
+		<SecondaryStructure name="entire_helix" overlap="0" minH="3" minE="2" include_terminal_loops="false" use_dssp="true" ss="H"/>
+		<And name="helix_cap" selectors="entire_loop">
+			<PrimarySequenceNeighborhood lower="1" upper="0" selector="entire_helix"/>
+		</And>
 
 	</RESIDUE_SELECTORS>
 	<TASKOPERATIONS>
-        	<OperateOnResidueSubset name="turn_off_others" selector="others"><PreventRepackingRLT/></OperateOnResidueSubset>
+		<OperateOnResidueSubset name="turn_off_others" selector="others">
+			<PreventRepackingRLT/>
+		</OperateOnResidueSubset>
 
-        	<OperateOnResidueSubset name="rtrp" selector="nbrhood"><RestrictToRepackingRLT/></OperateOnResidueSubset>
-        	<OperateOnResidueSubset name="rtrp_all" selector="all_focus"><RestrictToRepackingRLT/></OperateOnResidueSubset>
+		<OperateOnResidueSubset name="rtrp" selector="nbrhood">
+			<RestrictToRepackingRLT/>
+		</OperateOnResidueSubset>
+
+		<OperateOnResidueSubset name="rtrp_all" selector="design_positions OR nbrhood">
+			<RestrictToRepackingRLT/>
+		</OperateOnResidueSubset>
+
+		<IncludeCurrent name="include_current"/>
+		<InitializeFromCommandline name="cmd-line"/>
+
+		<DesignRestrictions name="layer_design">
+			Action selector_logic="surface AND helix_start"	aas="DEHKPQR"/>
+			Action selector_logic="surface AND helix"		aas="EHKQR"/>
+			Action selector_logic="surface AND sheet"		aas="EHKNQRST"/>
+			Action selector_logic="surface AND loop"		aas="DEGHKNPQRST"/>
+			Action selector_logic="boundary AND helix_start"	aas="ADEHIKLMNPQRSTVWY"/>
+			Action selector_logic="boundary AND helix"		aas="ADEHIKLMNQRSTVWY"/>
+			Action selector_logic="boundary AND sheet"		aas="DEFHIKLMNQRSTVWY"/>
+			Action selector_logic="boundary AND loop"		aas="ADEFGHIKLMNPQRSTVWY"/>
+			Action selector_logic="core AND helix_start"		aas="AFILMPVWY"/>
+			Action selector_logic="core AND helix"			aas="AFILMVWY"/>
+			Action selector_logic="core AND sheet"			aas="FILMVWY"/>
+			Action selector_logic="core AND loop"			aas="AFGILMPVWY"/>
+			<Action selector_logic="helix_cap"			aas="DNST"/>
+		</DesignRestrictions>
 
 	</TASKOPERATIONS>
 	<MOVE_MAP_FACTORIES>
-        	<MoveMapFactory name="fr_mm_factory" bb="0" chi="0" cartesian="1">
-            		<Chi residue_selector="all_focus" enable="1"/>
-            		<Backbone residue_selector="all_focus" enable="1" />
-        	</MoveMapFactory>
+		<MoveMapFactory name="fr_mm_factory" bb="0" chi="0" cartesian="1">
+			<Chi residue_selector="design_positions OR nbrhood" enable="1"/>
+			<Backbone residue_selector="design_positions OR nbrhood" enable="1" />
+		</MoveMapFactory>
 	</MOVE_MAP_FACTORIES>
 	<SIMPLE_METRICS>
-        	<TimingProfileMetric name="timing"/>
-        	<TotalEnergyMetric name="total_energy_delta" reference_name="pre_design_pose" custom_type="delta"/>
-        	<TotalEnergyMetric name="total_energy_delta_cart" reference_name="pre_design_pose" scorefxn="cart" custom_type="delta_cart"/>
-        	<TotalEnergyMetric name="total_energy_delta_native" use_native="1" custom_type="delta-native"/>
-        	<SelectedResiduesMetric name="selection" residue_selector="design_positions"/>
-		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1"/>
+		<TimingProfileMetric name="timing"/>
+		<TotalEnergyMetric name="total_energy_delta" reference_name="pre_design_pose" custom_type="delta"/>
+		<TotalEnergyMetric name="total_energy_delta_cart" reference_name="pre_design_pose" scorefxn="cart" custom_type="delta_cart"/>
+		<TotalEnergyMetric name="total_energy_delta_native" reference_name="native" custom_type="delta_native"/>
+		<TotalEnergyMetric name="total_energy_delta_native_cart" reference_name="native" custom_type="delta_native_cart" scorefxn="cart"/>
+		<SelectedResiduesMetric name="selection" residue_selector="design_positions"/>
+		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1" custom_type="sele_rosetta"/>
 		<SelectedResiduesPyMOLMetric name="pymol_selection" residue_selector="design_positions" />
-        	<SelectedResiduesPyMOLMetric name="region" residue_selector="all_focus" custom_type="region"/>
-        	<SequenceMetric name="sequence" residue_selector="design_positions" />
-        	<RMSDMetric name="rmsd" use_native="1" rmsd_type="rmsd_protein_bb_heavy"/>
-        	<ProtocolSettingsMetric name="settings" limit_to_options="positions,protocol"/>
+		<SelectedResiduesPyMOLMetric name="region" residue_selector="design_positions or nbrhood" custom_type="region"/>
+		<SequenceMetric name="sequence" residue_selector="design_positions" />
+		<SequenceMetric name="full_seq" custom_type="full_seq"/>
+		<RMSDMetric name="rmsd" reference_name="native" rmsd_type="rmsd_protein_bb_heavy" custom_type="native"/>
+		<RMSDMetric name="rmsd_to_pre" reference_name="pre_design_pose" rmsd_type="rmsd_protein_bb_heavy" custom_type="pre_design"/>
+		<ProtocolSettingsMetric name="settings" limit_to_options="positions,protocol"/>
 	</SIMPLE_METRICS>
 	<FILTERS>
 	</FILTERS>
 	<MOVERS>
-		<FastRelax name="cart_focus" task_operations="rtrp_all,turn_off_others" movemap_factory="fr_mm_factory" cartesian="1" scorefxn="cart" ramp_down_constraints="1"/>
-		<FastRelax name="cart_focus_design" task_operations="rtrp,turn_off_others" movemap_factory="fr_mm_factory" cartesian="1" scorefxn="cart" ramp_down_constraints="1" disable_design="0"/>
-       		<AddConstraintsToCurrentConformationMover name="apply_coordinate_constraints" cst_weight="1.0" use_distance_cst="False" coord_dev="0.5" bound_width="0" CA_only="True" bb_only="False" />
-        	<ClearConstraintsMover name="remove_coordinate_constraints" />
-        	<RunSimpleMetrics name="post_design_metrics" metrics="total_energy_delta,timing,selection,rosetta_sele,pymol_selection,region,sequence,rmsd,total_energy_delta_native,settings" />
-        	<SavePoseMover name="store_pre_design_pose" restore_pose="0" reference_name="pre_design_pose" />
-        	<SavePoseMover name="store_current" restore_pose="0" reference_name="current"/>
-        	<SavePoseMover name="get_current" restore_pose="1" reference_name="current"/>
+		<FastRelax name="cart_focus" repeats="%%repeats%%" task_operations="include_current,cmd-line,rtrp_all,turn_off_others" movemap_factory="fr_mm_factory" cartesian="1" scorefxn="cart" ramp_down_constraints="1"/>
+		<FastRelax name="cart_focus_design" repeats="%%repeats%%" task_operations="layer_design,include_current,cmd-line,rtrp,turn_off_others" movemap_factory="fr_mm_factory" cartesian="1" scorefxn="cart" ramp_down_constraints="1" disable_design="0"/>
+
+		<AddConstraintsToCurrentConformationMover name="apply_coordinate_constraints" cst_weight="1.0" use_distance_cst="False" coord_dev="%%cst_dev%%" bound_width="0" CA_only="True" bb_only="False" />
+		<If name="maybe_csts" value="%%coord_cst%%" true_mover_name="apply_coordinate_constraints"/>
+
+		<ClearConstraintsMover name="remove_coordinate_constraints" />
+		<RunSimpleMetrics name="post_design_metrics" metrics="total_energy_delta_native_cart,rmsd_to_pre,full_seq,total_energy_delta,timing,selection,rosetta_sele,pymol_selection,region,sequence,rmsd,total_energy_delta_native,total_energy_delta_cart,settings" />
+		<SavePoseMover name="store_native" restore_pose="0" reference_name="native"/>
+		<SavePoseMover name="store_pre_design_pose" restore_pose="0" reference_name="pre_design_pose" />
+		<SavePoseMover name="store_current" restore_pose="0" reference_name="current"/>
+		<SavePoseMover name="get_current" restore_pose="1" reference_name="current"/>
 	</MOVERS>
 	<PROTOCOLS>
 
 		Run Cartesian on input PDB as a SCORE CONTROL
-		<Add mover="apply_coordinate_constraints"/>
+		<Add mover="store_native"/>
+		<Add mover="maybe_csts"/>
 		<Add mover="store_current"/>
 		<Add mover="cart_focus"/>
 
 		Make sure Coordinate Constraints are still there after ramp.
-		<Add mover="apply_coordinate_constraints" />
+		<Add mover="maybe_csts" />
 		<Add mover="store_pre_design_pose"/>
 
 		Get original pose and run design.  

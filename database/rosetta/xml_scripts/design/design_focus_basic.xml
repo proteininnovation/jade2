@@ -3,46 +3,81 @@
 	</SCOREFXNS>
 	<RESIDUE_SELECTORS>
 		<Index name="design_positions" resnums="%%positions%%"/>
-        	<Neighborhood name="nbrhood" selector="design_positions" include_focus_in_subset="0"/>
-        	<Neighborhood name="all_focus" selector="design_positions"/>
-        	<Not name="others" selector="all_focus" />
+		<Neighborhood name="nbrhood" selector="design_positions" include_focus_in_subset="0" distance="%%pack_radius%%"/>
+		<Not name="others" selector="design_positions OR nbrhood" />
+
+		<SecondaryStructure name="entire_loop" overlap="0" minH="3" minE="2" include_terminal_loops="true" use_dssp="true" ss="L"/>
+		<SecondaryStructure name="entire_helix" overlap="0" minH="3" minE="2" include_terminal_loops="false" use_dssp="true" ss="H"/>
+		<And name="helix_cap" selectors="entire_loop">
+			<PrimarySequenceNeighborhood lower="1" upper="0" selector="entire_helix"/>
+		</And>
 
 	</RESIDUE_SELECTORS>
 	<TASKOPERATIONS>
-        	<OperateOnResidueSubset name="turn_off_others" selector="others"><PreventRepackingRLT/> </OperateOnResidueSubset>
+		<OperateOnResidueSubset name="turn_off_others" selector="others">
+			<PreventRepackingRLT/>
+		</OperateOnResidueSubset>
 
-        	<OperateOnResidueSubset name="rtrp" selector="nbrhood" ><RestrictToRepackingRLT /></OperateOnResidueSubset>
-        	<OperateOnResidueSubset name="rtrp_all" selector="all_focus"><RestrictToRepackingRLT/> </OperateOnResidueSubset>
+		<OperateOnResidueSubset name="rtrp" selector="nbrhood" >
+			<RestrictToRepackingRLT />
+		</OperateOnResidueSubset>
+
+		<OperateOnResidueSubset name="rtrp_all" selector="design_positions OR nbrhood">
+			<RestrictToRepackingRLT/>
+		</OperateOnResidueSubset>
+
+		<IncludeCurrent name = "include_current"/>
+		<InitializeFromCommandline name="cmd-line"/>
+
+		<DesignRestrictions name="layer_design">
+			Action selector_logic="surface AND helix_start"	aas="DEHKPQR"/>
+			Action selector_logic="surface AND helix"		aas="EHKQR"/>
+			Action selector_logic="surface AND sheet"		aas="EHKNQRST"/>
+			Action selector_logic="surface AND loop"		aas="DEGHKNPQRST"/>
+			Action selector_logic="boundary AND helix_start"	aas="ADEHIKLMNPQRSTVWY"/>
+			Action selector_logic="boundary AND helix"		aas="ADEHIKLMNQRSTVWY"/>
+			Action selector_logic="boundary AND sheet"		aas="DEFHIKLMNQRSTVWY"/>
+			Action selector_logic="boundary AND loop"		aas="ADEFGHIKLMNPQRSTVWY"/>
+			Action selector_logic="core AND helix_start"		aas="AFILMPVWY"/>
+			Action selector_logic="core AND helix"			aas="AFILMVWY"/>
+			Action selector_logic="core AND sheet"			aas="FILMVWY"/>
+			Action selector_logic="core AND loop"			aas="AFGILMPVWY"/>
+			<Action selector_logic="helix_cap"			aas="DNST"/>
+		</DesignRestrictions>
+
 	</TASKOPERATIONS>
 	<MOVE_MAP_FACTORIES>
 	</MOVE_MAP_FACTORIES>
 	<SIMPLE_METRICS>
-        	<TimingProfileMetric name="timing"/>
-        	<TotalEnergyMetric name="total_energy_delta" reference_name="pre_design_pose" custom_type="delta"/>
-        	<TotalEnergyMetric name="total_energy_delta_native" use_native="1" custom_type="delta-native"/>
-        	<SelectedResiduesMetric name="selection" residue_selector="design_positions"/>
-		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1" custom_type="rosetta"/>
+		<TimingProfileMetric name="timing"/>
+		<TotalEnergyMetric name="total_energy_delta" reference_name="pre_design_pose" custom_type="delta"/>
+		<SelectedResiduesMetric name="selection" residue_selector="design_positions" custom_type="design_positions"/>
+		<SelectedResiduesMetric name="rosetta_sele" residue_selector="design_positions" rosetta_numbering="1" custom_type="rosetta_design_positions"/>
+		<SelectedResiduesMetric name="pack_region" residue_selector="nbrhood" custom_type="pack_region"/>
 		<SelectedResiduesPyMOLMetric name="pymol_selection" residue_selector="design_positions" />
-        	<SelectedResiduesPyMOLMetric name="region" residue_selector="all_focus" custom_type="region"/>
-        	<SequenceMetric name="sequence" residue_selector="design_positions" />
-        	<ProtocolSettingsMetric name="settings" limit_to_options="positions,protocol"/>
+		<SelectedResiduesPyMOLMetric name="region" residue_selector="nbrhood OR design_positions" custom_type="region"/>
+		<SequenceMetric name="sequence" residue_selector="design_positions" />
+		<SequenceMetric name="full_sequence" custom_type="full_seq"/>
+		<ProtocolSettingsMetric name="settings" limit_to_options="positions,protocol"/>
 	</SIMPLE_METRICS>
 	<FILTERS>
 	</FILTERS>
 	<MOVERS>
-		<PackRotamersMover name="pack_focus" task_operations="rtrp_all,turn_off_others" />
-		<PackRotamersMover name="pack_focus_design" task_operations="rtrp,turn_off_others" />
-        	<RunSimpleMetrics name="post_design_metrics" metrics="total_energy_delta,timing,selection,rosetta_sele,pymol_selection,region,sequence,total_energy_delta_native,settings" />
-        	<SavePoseMover name="store_pre_design_pose" restore_pose="0" reference_name="pre_design_pose" />
-        	<SavePoseMover name="store_current" restore_pose="0" reference_name="current"/>
+		<PackRotamersMover name="pack_focus" task_operations="include_current,cmd-line,rtrp_all,turn_off_others" />
+		<PackRotamersMover name="pack_focus_design" task_operations="layer_design,include_current,cmd-line,rtrp,turn_off_others" />
+		<RunSimpleMetrics name="pre_design_metrics" metrics="sequence,full_sequence" prefix="pre_"/>
+		<RunSimpleMetrics name="post_design_metrics" metrics="pack_region,full_sequence,total_energy_delta,timing,selection,rosetta_sele,pymol_selection,region,sequence,settings" />
+		<SavePoseMover name="store_pre_design_pose" restore_pose="0" reference_name="pre_design_pose" />
+		<SavePoseMover name="store_current" restore_pose="0" reference_name="current"/>
 
-        	<SavePoseMover name="get_current" restore_pose="1" reference_name="current"/>
+		<SavePoseMover name="get_current" restore_pose="1" reference_name="current"/>
 	</MOVERS>
 	<PROTOCOLS>
 
 		Run Packer on input as a CONTROL for score comparisons
 		<Add mover="store_current"/>
 		<Add mover="pack_focus"/>
+		<Add mover="pre_design_metrics"/>
 		<Add mover="store_pre_design_pose"/>
 
 		Run Packer to do design
