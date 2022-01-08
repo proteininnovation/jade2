@@ -445,11 +445,22 @@ class DashPlot:
 
         print("Copying ", pdb_path, " into "+outdir)
         os.system('cp '+selection['points'][0]['hovertext']+' '+outdir+"/"+pdb_path_new)
-        sele = ['show stick']
+        sele = ['hide sticks']
+
+        colors = ['magenta', 'green', 'blue', 'red', 'orange']
+        selections = 0
         for line in open(outdir+"/"+pdb_path_new):
             lineSP = line.strip().split()
             if len(lineSP) > 4 and lineSP[1] == "select":
+                sele_name = lineSP[2].strip(',')
                 sele.append(" ".join(lineSP[1:]))
+                sele.append('center '+sele_name)
+                sele.append(f'color {colors[selections]}, '+sele_name)
+                sele.append('show sticks, '+sele_name)
+                sele.append('zoom '+sele_name+',10')
+                sele.append('color atomic, (not elem C)')
+                selections+=1
+
         cmd = ";".join(sele)
         cmd+=";deselect"
         #os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}f"+f" -d '{cmd}' &")

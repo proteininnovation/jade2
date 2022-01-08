@@ -97,8 +97,7 @@ class RunNNMetrics( object ):
             else:
                 return torch.cat(data).cpu().numpy()
         else:
-            print("Data Length", len(data))
-            print(data[0])
+            return data[0].cpu().numpy()
 
     def run_stored(self, show=False) -> DefaultDict:
         """
@@ -112,6 +111,7 @@ class RunNNMetrics( object ):
         """
         Run metrics setup in class. Return data. Data is also stored for future writing.
         """
+        if type(pred) == "NoneType": return None
 
         if type(pred) != np.ndarray:
             #print("Flattening tensor")
