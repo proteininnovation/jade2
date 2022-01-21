@@ -58,6 +58,16 @@ def get_sequence_from_fasta(fasta_path: Union[Path, str], label: str) -> str:
             seq = str(record.seq)
             return seq
 
+def get_single_sequence_from_fasta(fasta_path: Union[Path, str]) -> str:
+    """
+    return the sequence from a fasta file by feeding it a particular label
+    """
+    for record in SeqIO.parse(str(fasta_path), format='fasta'):
+        logging.info("Getting sequence from "+fasta_path)
+        name = record.id
+        seq = str(record.seq)
+        return seq
+
 def read_header_data_from_fasta(fasta_path: Union[Path, str]) -> DefaultDict[str, Tuple[str,str,str,str]]:
     """
     Reads > from fasta (PDBAA) and returns a defaultdict of
