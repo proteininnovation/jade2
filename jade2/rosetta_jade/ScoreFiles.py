@@ -255,7 +255,12 @@ class ScoreFile:
     df["name"] = self.name
     df["scorefile"] = self.filename
 
-    if 'decoy' in df.columns:
+    #Don't overwrite decoy path if it exists.
+    if 'decoy_path' in df.columns:
+        if 'decoy' not in df.columns:
+            df['decoy'] = [os.path.basename(x) for x in df['decoy_path']]
+
+    elif 'decoy' in df.columns:
         if os.path.dirname(self.filename):
           df["decoy_path"] = os.path.dirname(self.filename)+"/"+df["decoy"]
           df["decoy_path"] = [get_decoy_path(p) for p in df["decoy_path"]]

@@ -173,7 +173,7 @@ class DashPlot:
 
     outdir = "analysis_cache"
 
-    def __init__(self, data, hover_name="decoy", outdir="analysis_cache", pymol_cutoff=100, skip_box_copy = False):
+    def __init__(self, data, hover_name="decoy_path", outdir="analysis_cache", pymol_cutoff=100, skip_box_copy = False, combined_copy=False):
         self.data = data
         self.hover_name = hover_name
         self.outdir = outdir
@@ -188,6 +188,8 @@ class DashPlot:
             "violin": self.make_violin,
             "box": self.make_box
         }
+
+        self.combined_copy = combined_copy
 
     def get_all_plot_inputs(self, type):
         return self.dropbox_dict[type] + [d for d in self.extra_columns[type]]
@@ -445,7 +447,7 @@ class DashPlot:
 
         print("Copying ", pdb_path, " into "+outdir)
         os.system('cp '+selection['points'][0]['hovertext']+' '+outdir+"/"+pdb_path_new)
-        sele = ['hide sticks']
+        sele = ['hide sticks, polymer.protein']
 
         colors = ['magenta', 'green', 'blue', 'red', 'orange']
         selections = 0
@@ -566,8 +568,12 @@ class DashPlot:
 
             line = "{},{},{:.3f},{},{:.3f},{},{:.3f}\n".format(pdb_path_new,x,x_val,y,y_val,z,z_val)
             LOG.write(line)
+
             if not self.skip_box_copy:
-                os.system('cp '+pdb_path+' '+outdir+"/"+pdb_path_new)
+                if not self.combined_copy:
+                    os.system('cp '+pdb_path+' '+outdir+"/"+pdb_path_new)
+                else:
+                    os.system('cp ' + pdb_path + ' ' + outdir)
         LOG.close()
 
         if len(pdbs) <= self.box_selection_pymol_cutoff:
@@ -717,6 +723,11 @@ def get_options():
     parser.add_argument("--native",
                         help = "Load the native pose along with the designs")
 
+    parser.add_argument("--combined_copy",
+                        help = "When doing box with subdirectories, copy all instead of using subdir in pdb name",
+                        action = "store_true",
+                        default = False)
+
     options = parser.parse_args()
     return options
 
@@ -862,7 +873,7 @@ if __name__ == "__main__":
     apply_layout(app, df)
 
     #DO ALL YOUR DF MANIPULATIONS ABOVE THIS LINE!
-    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy)
+    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy, options.combined_copy)
     if not os.path.exists(p.outdir):
         os.mkdir(p.outdir)
 

@@ -31,6 +31,8 @@ def calculate_mw(sequence: str, kda= True) -> int:
     :return:
     """
     out = 0
+    if not sequence:
+        return 0
     for aa in sequence:
         if aa not in aaweights:
             continue

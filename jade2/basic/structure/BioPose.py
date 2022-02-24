@@ -35,6 +35,7 @@ class PoseResidue(Residue):
     def __init__(self, res: Residue, chain_id: str):
         self.id: List[Any] = []
         Residue.__init__(self, res.id, res.resname, res.segid)
+        self.resnum = res.id[1]
         self.chain_id = chain_id
 
 class BioPose(object):
@@ -316,7 +317,7 @@ class BioPose(object):
 
         ppb = PPBuilder(radius=float(1000))
         seq = ""
-        chainmodel = ppb.build_peptides(self, aa_only=False)
+        chainmodel = ppb.build_peptides(self.struct, aa_only=False)
         for aa in chainmodel:
             seq = seq + aa.get_sequence()
 

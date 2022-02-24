@@ -177,3 +177,4 @@ def extract_score_from_decoy( pdb_path ):
 
     return score
 
+
