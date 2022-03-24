@@ -135,5 +135,3 @@ class PDBResInfo(object):
     def total_residues(self) -> int:
         return len(self.pose_to_record_map)
 
-    def total_residue(self) -> int:
-        return len(self.pose_to_record_map)

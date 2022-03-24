@@ -5,9 +5,10 @@ from .path import *
 from .restype_definitions import *
 from .stats import *
 from .string_util import *
+from . import restype_definitions as resd
 
 
-
+aacodes = resd.RestypeDefinitions().get_all_one_letter_codes()
 
 class vector1(list):
     """

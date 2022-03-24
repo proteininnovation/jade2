@@ -32,6 +32,7 @@ class RestypeDefinitions():
         three_letter_code = three_letter_code.split("_")[0].upper(); #Fix for Rosetta designated chain endings.
         if three_letter_code in ["HSD", "HIE", "HIP", "HID"]: three_letter_code="HIS"; #Fix for his protonation state
         if three_letter_code=="CYD": three_letter_code="CYS"; #Fix for Disulfide
+        if three_letter_code=="SEC": trhee_letter_code="CYS"; #Fix for selenocysteine
         for triplet in self.restype_info["All"]:
             tripletSP = triplet.split(":")
             if tripletSP[1]==three_letter_code:

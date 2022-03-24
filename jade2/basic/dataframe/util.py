@@ -61,6 +61,21 @@ def multi_tab_excel(df_list, sheet_list, file_name):
     writer.save()
 
 
+def add_sheet_to_workbook(local_wb, local_df, name):
+    """
+    Adds a Dataframe as a sheet to an openpyxl workbook using dataframe_to_rows
+    """
+    from openpyxl import Workbook
+    from openpyxl.utils.dataframe import dataframe_to_rows
+
+    ws = local_wb.create_sheet(name)
+    ws.title = name
+    for r in dataframe_to_rows(local_df, index=False, header=True):
+        ws.append(r)
+
+    for cell in ws['A'] + ws[1]:
+        cell.style = 'Pandas'
+
 def drop_matching(local_df: pd.DataFrame, column: str, datapoint: str) -> pd.DataFrame:
     """
     Drop a column, return a new df.
@@ -255,3 +270,8 @@ class DataFrame2(pd.DataFrame):
                quotechar=quotechar, line_terminator=line_terminator, chunksize=chunksize,
                tupleize_cols=tupleize_cols, date_format=date_format, doublequote=doublequote,
                escapechar=escapechar, decimal=decimal)
+
+#Notes
+    #To return a DF instead of a damn group by object:
+        #for name, dd in residues.groupby('PDB ID', as_index = False):
+

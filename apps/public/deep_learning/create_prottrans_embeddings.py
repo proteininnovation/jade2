@@ -12,7 +12,7 @@ from jade2.basic.fasta import get_sequences_from_fasta
 
 import pandas
 
-def get_sequences(datafile, seq_column = "sequence_1D", test = False):
+def get_sequences(datafile, seq_column = "sequence_1D", test = False, test_size=100):
     """
     Read DF, return sequences.  So we do not hold the DF in memory.
     We could only read csv and grab the sequence column in the future.
@@ -28,7 +28,7 @@ def get_sequences(datafile, seq_column = "sequence_1D", test = False):
         sys.exit("Column not found in dataframe:"+options.seq_column)
 
     if test:
-        return df[seq_column][:101].to_numpy()
+        return df[seq_column][:test_size].to_numpy()
     else:
         return df[seq_column].to_numpy()
 
@@ -59,6 +59,11 @@ if __name__ == "__main__":
                         default = False,
                         action = "store_true")
 
+    parser.add_argument("--test_size",
+                        help = "Number of sequences to use for test.",
+                        default = 100,
+                        type = int)
+
     parser.add_argument("--chunk_size",
                         help = "Chunk size for each batch.  Default is one sequence at a time. Useful if running on multiple CPUs instead of GPU",
                         default = 1,
@@ -83,18 +88,20 @@ if __name__ == "__main__":
     else:
         cpus = options.cpus
 
+    test_size = options.test_size
 
     #print(sep_sequences)
 
     if options.datafile:
-        sequences = get_sequences(options.datafile, options.seq_column, options.test)
+        sequences = get_sequences(options.datafile, options.seq_column, options.test, test_size=test_size)
     elif options.fasta:
         sequences, names = get_sequences_from_fasta(options.fasta)
+        if options.test:
+            sequences = sequences[:test_size]
     else:
         sys.exit("Must pass either datafile or fasta to load sequences")
 
     print("NSequences:",len(sequences))
-
     i = 1
 
     if options.pad_with_seq:
@@ -106,9 +113,9 @@ if __name__ == "__main__":
 
     #Chunk the sequences.
     chunked_sequences = [sequences[i:i + options.chunk_size] for i in range(0, len(sequences), options.chunk_size)]
-    #print("Chunks: ", len(chunked_sequences))
-    #for x in chunked_sequences:
-        #print("c", len(x))
+    print("Chunks: ", len(chunked_sequences))
+    for x in chunked_sequences:
+        print("c", len(x))
 
     max_length = max([len(x) for x in sequences])
     #[print(len(x)) for x in sequences]
@@ -130,22 +137,26 @@ if __name__ == "__main__":
     print("Starting")
     start_time = time.time()
 
+    total_complete = 0
+    i=0
 
     for s in chunked_sequences:
-        #print("Chunk_size", len(s))
-        if not options.test:
-            if not i % 500: print(i)
-        else:
-            if not i % 10: print(i)
+
 
         sep_sequences = []
         for seq in s:
+            i+=1
+            # print("Chunk_size", len(s))
+            if not options.test:
+                if not i % 500: print(i)
+            else:
+                if not i % 10: print(i)
 
             new_seq = seq
             print(len(seq), max_length)
 
             if len(seq) < max_length:
-                for x in range(max_length - len(sep_sequences)):
+                for x in range(max_length - len(seq)):
                     new_seq+="X"
 
             assert(len(new_seq) == max_length)
@@ -156,11 +167,13 @@ if __name__ == "__main__":
         ids = tokenizer.batch_encode_plus(clean, add_special_tokens=True, pad_to_max_length=True)
         input_ids = torch.tensor(ids['input_ids']).to(device)
         attention_mask = torch.tensor(ids['attention_mask']).to(device)
+        print("Running chunk.")
         with torch.no_grad():
             embedding = prottrans_model(input_ids=input_ids,attention_mask=attention_mask)[0]
             embeddings.append(embedding.cpu().detach())
-        i+=1
+        total_complete += len(sep_sequences)
 
+        print(f"Chunk done, total_complete = {total_complete}")
         if options.save_size and not i % options.save_size:
             embeddings_t = torch.cat(embeddings)
             torch.save(embeddings_t, options.outfile+str(save_num))

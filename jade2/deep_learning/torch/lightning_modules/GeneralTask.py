@@ -51,6 +51,9 @@ class GeneralTask(pl.LightningModule):
         self.losses_train = []
         self.losses_val = []
 
+    def forward(self, *args, **kwargs):
+        return self.model(*args, **kwargs)
+
     def on_train_start(self) -> None:
         #self.logger.log_hyperparams(dict(self.params.for_writer()))
         print("training started! on ", self.device)
@@ -78,7 +81,7 @@ class GeneralTask(pl.LightningModule):
         General learning step. Returns loss, prediction, labels
         """
         bg, labels = batch
-        prediction = self.model(bg)
+        prediction = self.forward(bg)
         loss = self.loss_fn(prediction, labels)
 
         if self.classifier:
@@ -96,35 +99,44 @@ class GeneralTask(pl.LightningModule):
         return loss, prediction, labels
 
     def training_step(self, batch, batch_idx):
+        #print("Training step")
         loss, prediction, labels = self.general_step(batch, batch_idx, self.train_runner, "train")
         self.log('train_loss', loss.item(), on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
+        #print("Validation step")
         loss, prediction, labels = self.general_step(batch, batch_idx, self.val_runner, "val")
         self.log('val_loss', loss.item(), on_step=False, on_epoch=True)
         return loss
 
     def test_step(self, batch, batch_idx):
+        #print("Test step")
         loss, prediction, labels = self.general_step(batch, batch_idx, self.test_runner, "test")
         return loss
 
     def on_epoch_start(self) -> None:
-        self.val_runner.clear()
-        self.train_runner.clear()
+        #print("Called epoch start. Clearing data.")
+        pass
+
 
     def training_epoch_end(self, outputs) -> None:
         writer = self.logger.experiment
-
+        print("Training epoch end.  Running metrics")
         self.train_runner.run_stored(True)
         self.train_runner.write(writer, self.current_epoch, use_metric_name=True, show=True, prefix="Train")
         self.losses_train.append(self.train_runner.data['loss'])
+        #print("Train metrics written and cleared")
+        self.train_runner.clear()
 
     def on_validation_epoch_end(self) -> None:
+        print("Validation epoch end. Running metrics")
         writer = self.logger.experiment
         self.val_runner.run_stored(True)
         self.val_runner.write(writer, self.current_epoch, use_metric_name=True, show=True, prefix="Val")
         self.losses_val.append(self.val_runner.data['loss'])
+        #print("validation metrics written and cleared")
+        self.val_runner.clear()
 
     def on_test_end(self) -> None:
         """
@@ -132,7 +144,11 @@ class GeneralTask(pl.LightningModule):
         Sets self.out_data for use elsewhere.
         :return:
         """
+        #print("Test epoch end.  Running metrics")
+
         self.test_runner.run_stored(True)
+        #print("Ran test stored")
+
         data = self.test_runner.write(self.logger.experiment, self.current_epoch, use_metric_name=True, show=True, prefix="Test")
         self.logger.log_hyperparams(dict(self.params.for_writer()), dict(data))
         #print(data)
@@ -167,3 +183,5 @@ class GeneralTask(pl.LightningModule):
 
             fig.savefig(self.outdir+'/regression_'+str(self.run)+".pdf", dpi=300)
             self.logger.experiment.add_figure("regression", figure=fig)
+
+        self.test_runner.clear()

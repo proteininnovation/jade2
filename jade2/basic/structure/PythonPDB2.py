@@ -12,7 +12,7 @@ from pathlib import Path
 from jade2.basic.path import *
 
 class PythonPDB2:
-    def __init__(self, pdb_file_path: Union[str, Path] = ""):
+    def __init__(self, pdb_file_path: Union[str, Path, list] = ""):
         """
         
         Lightweight PDB class specifically for manipulating pdbs in scripts and simple apps as well as obtaining subsets of data in the PDB.
@@ -34,7 +34,10 @@ class PythonPDB2:
         self.remarks:     List[str] = []  #Only REMARK lines as strings
 
         if pdb_file_path:
-            self.read_pdb_into_map()
+            if type(pdb_file_path) == list:
+                self.read_pdb_from_lines(pdb_file_path)
+            else:
+                self.read_pdb_into_map()
         else:
             logging.info("Loading blank PythonPDB")
 
@@ -135,10 +138,33 @@ class PythonPDB2:
         """
         residue = []
         for dat in self.pdb_map:
-            if dat["residue_number"] == str(resnum) and dat["chain"] == chain and dat["icode"] == "":
+            if dat["chain"] == chain and dat["residue_number"] == str(resnum) and dat["i_code"] == icode:
                 residue.append(dat)
         return residue
 
+    def replace_atom(self, atom: Dict) -> bool:
+        """
+        Replace an atom in the pdbmap matching resnum, chain, and icode, and atom name
+        """
+        #print(residue)
+        resnum = atom['residue_number']
+        chain = atom['chain']
+        icode = atom['i_code']
+        atom_number = atom['atom_name']
+        for num,dat in enumerate(self.pdb_map):
+            if dat['chain'] == chain and dat['residue_number'] == resnum and dat['i_code'] == icode and dat['atom_name'] == atom_number:
+                #print("Replacing residue")
+                #print(resnum, data['residue_number'])
+                #print(dat['x'], residue['x'])
+                #print(dat)
+                #print(residue)
+                self.pdb_map[num] = atom
+                return True
+
+        return False
+
+    def add_atom(self, atom):
+        self.pdb_map.append(atom)
 
 
     ####################################################################
@@ -146,40 +172,46 @@ class PythonPDB2:
     #
     #
 
-    def read_pdb_into_map(self):
+    def read_pdb_from_lines(self, lines):
         """
-        Reads PDB file path into a basic PDB map.  All data is held as strings.
+        Reads PDB file held as a list of lines
         """
-        
-        FILE = open_file(self.pdb_file_path, 'r')
         i = 0
-        for line in FILE:
+        for line in lines:
             line = line.strip()
             line = line.strip('\n')
 
             if not line: continue
+            if line.startswith('#'): continue
 
             if re.search("REMARK", line[0:6]):
                 self.remarks.append(line)
 
             elif (re.search("END", line[0:6]) or re.search("TER", line[0:6])):
-                #We ignore END and TER for now.
+                # We ignore END and TER for now.
                 pass
 
             elif (re.search("ATOM", line[0:6]) or re.search("HETATM", line[0:6])):
 
                 self.pdb_map.append(defaultdict())
 
-                self.pdb_map[i]["id"]=line[0:6].strip()
-                self.pdb_map[i]["atom_number"]=line[6:11].strip();     self.pdb_map[i]["atom_name"] = line[12:16]
-                self.pdb_map[i]["alternate_location"]=line[16];        self.pdb_map[i]["three_letter_code"] = line[17:21].strip()
-                self.pdb_map[i]["chain"] = line[21];           self.pdb_map[i]["residue_number"]= line[22:26].strip()
-                self.pdb_map[i]["i_code"] = line[26];                  self.pdb_map[i]["x"] = line[27:38].strip()
-                self.pdb_map[i]["y"]= line[38:46].strip();             self.pdb_map[i]["z"]= line[46:54].strip()
-                self.pdb_map[i]["occupancy"] = line[54:60].strip();    self.pdb_map[i]["b_factor"]=line[60:66].strip()
-                self.pdb_map[i]["element"]=line[66:78].strip();        self.pdb_map[i]["charge"]=line[78:79].strip()
+                self.pdb_map[i]["id"] = line[0:6].strip()
+                self.pdb_map[i]["atom_number"] = line[6:11].strip();
+                self.pdb_map[i]["atom_name"] = line[12:16]
+                self.pdb_map[i]["alternate_location"] = line[16];
+                self.pdb_map[i]["three_letter_code"] = line[17:21].strip()
+                self.pdb_map[i]["chain"] = line[21];
+                self.pdb_map[i]["residue_number"] = line[22:26].strip()
+                self.pdb_map[i]["i_code"] = line[26];
+                self.pdb_map[i]["x"] = line[27:38].strip()
+                self.pdb_map[i]["y"] = line[38:46].strip();
+                self.pdb_map[i]["z"] = line[46:54].strip()
+                self.pdb_map[i]["occupancy"] = line[54:60].strip();
+                self.pdb_map[i]["b_factor"] = line[60:66].strip()
+                self.pdb_map[i]["element"] = line[66:78].strip();
+                self.pdb_map[i]["charge"] = line[78:79].strip()
 
-                i +=1
+                i += 1
 
             elif (re.search("REMARK", line[0:6])):
                 self.remarks.append(line)
@@ -187,7 +219,18 @@ class PythonPDB2:
             else:
                 self.header.append(line)
 
-        FILE.close()
+
+    def read_pdb_into_map(self, path=None):
+        """
+        Reads PDB file path into a basic PDB map.  All data is held as strings.
+        """
+
+        if path:
+            self.pdb_file_path = path
+
+        lines = open_file(self.pdb_file_path, 'r').readlines()
+        self.read_pdb_from_lines(lines)
+
 
     def save_PDB(self, filename: Union[Path, str], output_remarks: bool = True, output_header: bool= True) -> Union[Path, str]:
         """
@@ -679,9 +722,7 @@ class PythonPDB2:
                 self.pdb_map[line]['b_factor']="%.2f"%data
             else:
                 continue
-            
-        
-    
+
     def replace_atom_b_factor(self, resnum: int, chain: str, atomname: str, data: float):
         """
         Replaces the b factor of an atom.

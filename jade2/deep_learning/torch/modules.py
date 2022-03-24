@@ -153,16 +153,14 @@ class GeneralLinearModel(pl.LightningModule):
         super().__init__()
         features = in_t.shape[1]
 
-
         layers_list = [self.get_linear_layer(x[0], x[1], x[2]) for x in self.get_layer_mapping(features, layer_opt, dropout1, dropout_rest)]
-
         layers_list.append(self.get_last_linear_layer(layer_opt[-1], n_labels))
-
         #Account for optional classifier.
         if classifier:
             layers_list.append(nn.LogSoftmax(dim=1))
 
         self.layers = nn.Sequential(*layers_list)
+        print("Initialized model")
 
     def forward(self, x):
         return self.layers(x)
@@ -192,10 +190,12 @@ class GeneralLinearModel(pl.LightningModule):
         f_in = start_features
         dropout=dropout1
         feature_map = []
+        print(features)
         for x in features:
             if i >0:
                 f_in = features[i-1]
-                dropout_rest = dropout_rest
-            feature_map.append((f_in, x, dropout_rest))
+                dropout = dropout_rest
+            feature_map.append((f_in, x, dropout))
             i+=1
+
         return feature_map

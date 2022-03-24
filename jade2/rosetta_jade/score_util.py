@@ -60,11 +60,36 @@ def get_dataframe_from_json(filename: str) -> pandas.DataFrame:
     return create_decoy_path_column(df, filename)
 
 def create_decoy_path_column(df: pandas.DataFrame, filename: str) -> pandas.DataFrame:
-    if "decoy" in df.columns:
+    def fix_path(original):
+        v = get_decoy_path(os.path.dirname(os.path.abspath(filename)) + "/" + original)
+        return v
+
+    def maybe_fix_path(original):
+        if os.path.exists(original): return original
+        else:
+            v = os.path.dirname(os.path.abspath(filename)) + "/" + original
+            if os.path.exists(v):
+                return v
+            else:
+                v = get_decoy_path(v)
+                if os.path.exists(v):
+                    return v
+
+        return original
+
+    #Don't overwrite decoy path if it exists.
+    if 'decoy_path' in df.columns:
+        print("Fixing decoy path")
+
+        df['decoy_path'] = [maybe_fix_path(x) for x in df['decoy_path']]
+        if 'decoy' not in df.columns:
+            df['decoy'] = [os.path.basename(x) for x in df['decoy_path']]
+
+
+    elif "decoy" in df.columns:
         if os.path.dirname(filename):
 
-            df["decoy_path"] = os.path.dirname(os.path.abspath(filename))+"/"+df["decoy"]
-            df["decoy_path"] = [get_decoy_path(p) for p in df["decoy_path"]]
+            df["decoy_path"] = [fix_path(p) for p in df['decoy']]
             print(df["decoy_path"])
             df['decoy_path']= df['decoy_path'].astype(str)
         else:

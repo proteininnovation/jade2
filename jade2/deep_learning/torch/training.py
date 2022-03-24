@@ -66,7 +66,8 @@ def run_with_lightning(model, data_loader,
                       gpus=gpus,
                       num_processes= cpus,
                       progress_bar_refresh_rate=1,
-                      num_sanity_val_steps=0)
+                      num_sanity_val_steps=0,
+                      log_every_n_steps=1)
 
 
     trainer.fit(model, data_loader)
@@ -77,7 +78,7 @@ def run_with_lightning(model, data_loader,
 
     #Add optional model path.
     # If we do that, we need to also setup the dataloader
-    trainer.test(ckpt_path=best_model)
+    trainer.test(ckpt_path=best_model, test_dataloaders=data_loader)
 
     #Write resultant data to a json for easy analysis in IAE
     out_df_data = dict()

@@ -33,6 +33,9 @@ class RunNNMetrics( object ):
         loss_mean should be the mean.  We'll take an even mean over the batches.
         https://discuss.pytorch.org/t/on-running-loss-and-average-loss/107890
         """
+        #print("Updating ", pred.shape)
+        #print("Pred Type", type(pred))
+        #print(pred.detach().flatten())
         if type(pred) != np.ndarray:
             #print("Flattening tensor")
             p = pred.detach().flatten()
@@ -45,7 +48,7 @@ class RunNNMetrics( object ):
             self.pred.append(pred)
             self.labels.append(labels)
             self.loss += loss_mean * pred.shape[0]
-
+        #print("Length of predictions",len(self.pred))
         #print("Updating val metrics")
 
         #print("Loss", self.loss)
@@ -85,22 +88,30 @@ class RunNNMetrics( object ):
         :param data:
         :return:
         """
-        if type(data[0]) == np.ndarray:
-            return np.concatenate(data)
+        #print("Running Prepare data")
+        #print(data)
+        #print(type(data))
+        if len(data) > 1:
+            if type(data[0]) == np.ndarray:
+                return np.concatenate(data)
+            else:
+                return torch.cat(data).cpu().numpy()
         else:
-            return torch.cat(data).cpu().numpy()
+            return data[0].cpu().numpy()
 
     def run_stored(self, show=False) -> DefaultDict:
         """
         Run metrics on stored data, return data.
         :return:
         """
+        #print("Running stored.")
         return self.run(self.__prepare(self.pred), self.__prepare(self.labels), show)
 
     def run(self, pred: Union[np.ndarray, torch.Tensor], labels: Union[np.ndarray, torch.Tensor], show = False) -> DefaultDict:
         """
         Run metrics setup in class. Return data. Data is also stored for future writing.
         """
+        if type(pred) == "NoneType": return None
 
         if type(pred) != np.ndarray:
             #print("Flattening tensor")

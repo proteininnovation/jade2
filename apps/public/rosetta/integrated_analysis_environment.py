@@ -173,7 +173,7 @@ class DashPlot:
 
     outdir = "analysis_cache"
 
-    def __init__(self, data, hover_name="decoy", outdir="analysis_cache", pymol_cutoff=100, skip_box_copy = False):
+    def __init__(self, data, hover_name="decoy_path", outdir="analysis_cache", pymol_cutoff=100, skip_box_copy = False, combined_copy=False):
         self.data = data
         self.hover_name = hover_name
         self.outdir = outdir
@@ -188,6 +188,8 @@ class DashPlot:
             "violin": self.make_violin,
             "box": self.make_box
         }
+
+        self.combined_copy = combined_copy
 
     def get_all_plot_inputs(self, type):
         return self.dropbox_dict[type] + [d for d in self.extra_columns[type]]
@@ -445,14 +447,29 @@ class DashPlot:
 
         print("Copying ", pdb_path, " into "+outdir)
         os.system('cp '+selection['points'][0]['hovertext']+' '+outdir+"/"+pdb_path_new)
-        sele = ['show stick']
+        sele = ['hide sticks, polymer.protein']
+
+        colors = ['magenta', 'green', 'blue', 'red', 'orange']
+        selections = 0
         for line in open(outdir+"/"+pdb_path_new):
             lineSP = line.strip().split()
             if len(lineSP) > 4 and lineSP[1] == "select":
+                sele_name = lineSP[2].strip(',')
                 sele.append(" ".join(lineSP[1:]))
+                sele.append('center '+sele_name)
+                sele.append(f'color {colors[selections]}, '+sele_name)
+                sele.append('show sticks, '+sele_name)
+                sele.append('zoom '+sele_name+',10')
+                sele.append('color atomic, (not elem C)')
+                selections+=1
+
         cmd = ";".join(sele)
         cmd+=";deselect"
-        os.system('pymol '+outdir+"/"+pdb_path_new+f" -d '{cmd}' &")
+        #os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}f"+f" -d '{cmd}' &")
+        if native:
+            os.system('pymol ' + outdir + "/" + pdb_path_new + f" {native}" + f" -d '{cmd}' &")
+        else:
+            os.system('pymol ' + outdir + "/" + pdb_path_new + f" -d '{cmd}' &")
 
     def copy_decoys(self, x, y, selection, z = None):
         #print("args:",args)
@@ -551,8 +568,12 @@ class DashPlot:
 
             line = "{},{},{:.3f},{},{:.3f},{},{:.3f}\n".format(pdb_path_new,x,x_val,y,y_val,z,z_val)
             LOG.write(line)
+
             if not self.skip_box_copy:
-                os.system('cp '+pdb_path+' '+outdir+"/"+pdb_path_new)
+                if not self.combined_copy:
+                    os.system('cp '+pdb_path+' '+outdir+"/"+pdb_path_new)
+                else:
+                    os.system('cp ' + pdb_path + ' ' + outdir)
         LOG.close()
 
         if len(pdbs) <= self.box_selection_pymol_cutoff:
@@ -568,6 +589,9 @@ class DashPlot:
                     scripter.add_align_to(new_name, first_name)
                     scripter.add_line("center "+new_name)
                 first = False
+
+            if native and os.path.exists(native):
+                scripter.add_load_pdb("native", native)
 
             #scripter.add_show("sticks")
             #scripter.add_hide("(hydro)")
@@ -696,6 +720,14 @@ def get_options():
                         default= "sequence",
                         help = "Sequence column used for calculating MW if present. ")
 
+    parser.add_argument("--native",
+                        help = "Load the native pose along with the designs")
+
+    parser.add_argument("--split_copy",
+                        help = "When doing box within directories, split by subdirectories in pdb name",
+                        action = "store_true",
+                        default = False)
+
     options = parser.parse_args()
     return options
 
@@ -759,6 +791,11 @@ if __name__ == "__main__":
 
     options = get_options()
 
+    global native
+    native = options.native
+    print("NATIVE: ",native)
+
+
     hover_name="decoy_path"
     if options.scorefile == "test":
         df = px.data.tips()
@@ -782,6 +819,9 @@ if __name__ == "__main__":
         else:
             df = scores.get_dataframe(score_path, set_index=False)
         df['subset'] = subset_name
+
+    #Sort columns
+    df = df.reindex(sorted(df.columns), axis=1)
 
     #Used for classifiers:
     if 'accuracy' in df.columns:
@@ -833,7 +873,7 @@ if __name__ == "__main__":
     apply_layout(app, df)
 
     #DO ALL YOUR DF MANIPULATIONS ABOVE THIS LINE!
-    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy)
+    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy, not options.split_copy)
     if not os.path.exists(p.outdir):
         os.mkdir(p.outdir)
 
