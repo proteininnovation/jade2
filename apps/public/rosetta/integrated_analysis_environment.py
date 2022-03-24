@@ -723,8 +723,8 @@ def get_options():
     parser.add_argument("--native",
                         help = "Load the native pose along with the designs")
 
-    parser.add_argument("--combined_copy",
-                        help = "When doing box with subdirectories, copy all instead of using subdir in pdb name",
+    parser.add_argument("--split_copy",
+                        help = "When doing box within directories, split by subdirectories in pdb name",
                         action = "store_true",
                         default = False)
 
@@ -873,7 +873,7 @@ if __name__ == "__main__":
     apply_layout(app, df)
 
     #DO ALL YOUR DF MANIPULATIONS ABOVE THIS LINE!
-    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy, options.combined_copy)
+    p = DashPlot(df, hover_name, options.outdir, int(options.box_selection_pymol_cutoff), options.skip_box_copy, not options.split_copy)
     if not os.path.exists(p.outdir):
         os.mkdir(p.outdir)
 
