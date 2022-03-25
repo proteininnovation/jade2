@@ -4,6 +4,86 @@ import pytorch_lightning as pl
 from typing import List, Tuple
 
 
+import torch.nn as nn
+import torch
+import jade2.deep_learning.torch.util as tu
+
+class StandardConvolution1D(nn.Module):
+    """
+    Standard, exponential decaying 1D convolutional network for sequences and transfer learning.
+    Includes BatchNorm1D and ELU as activation function.
+
+    Kernel size of 3 requires padding 1
+    Kernel size of 5 requires padding 2
+
+    Decay rate determines how quickly we exponentially decrease the width of the network.
+      - For Ex. Decay rate of 2 means we go from 1024 to 512 to 256, etc.
+
+    Final_layer indicates the width of the final fully-connected linear layer
+    Dim2 is the length
+
+    Final layer is flattened.  We may want to titrate this down in the future.
+    """
+    def __init__(self, n_features, dim2, kernel_size = 3, padding =1, final_layer=15, decay_rate=2, ntasks=1):
+        # Setup the model here.
+        super().__init__()
+
+        features = n_features
+        n_labels = ntasks
+        dim2 = dim2
+        kernel_size = 3
+        padding = 1
+
+        # Setup Exponential decay of layers
+        layer_opt = tu.get_exp_decay_layer_list(features, final_layer, decay_rate)
+        print(layer_opt)
+        layers_list = [self._get_conv_layer(x[0], x[1], kernel_size, padding) for x in
+                       self._get_layer_mapping(features, layer_opt)]
+
+        # Now we deal with going to a linear layer.
+        layers_list.append(nn.Flatten())
+
+        layers_list.append(self._get_linear_layer(layer_opt[-1], ntasks, dim2, ))
+
+        self.layers = nn.Sequential(*layers_list)
+
+    def forward(self, x):
+        return self.layers(x)
+
+        # noinspection PyTypeChecker
+    def _get_conv_layer(self, features_in, features_out, kernel_size=5, padding=2):
+        print(features_in, features_out, kernel_size)
+
+        return nn.Sequential(
+            nn.Conv1d(features_in, features_out, kernel_size=kernel_size, padding=padding),
+            nn.BatchNorm1d(features_out),
+            nn.ELU(),
+
+        )
+
+    def _get_linear_layer(self, in_features, out_features, original_dim2):
+        """
+        Get the final linear layer accounting for in_features and pooling
+        """
+
+        total_features = in_features * original_dim2
+
+        return nn.Linear(total_features, out_features)
+
+    def _get_layer_mapping(self, start_features, features_max_pool):
+        """
+        Create a list of Tuples of in,out for layer creation.
+        """
+
+        i = 0
+        f_in = start_features
+        feature_map = []
+        for x in features_max_pool:
+            if i > 0:
+                f_in = features_max_pool[i - 1]
+            feature_map.append((f_in, x))
+            i += 1
+        return feature_map
 
 class MaxPoolProttrans(pl.LightningModule):
     """
