@@ -157,12 +157,15 @@ class BioPose(object):
 
     ### Lists of Structures ###
 
-    def chains(self) -> List[Chain]:
+    def models(self):
         """
-        Get a list of Bio Chains
+        Get a list of Bio models
         :rtype: list[bio.PDB.Chain.Chain
         """
         return [c for c in self.struct]
+
+    def chains(self, model_num=0) -> List[Chain]:
+        return [c for c in self.struct[model_num].get_chains()]
 
     def residues(self, chain_id: str, model_num: int = 0, include_alt: bool = False) -> List[PoseResidue]:
         """
@@ -322,6 +325,12 @@ class BioPose(object):
             seq = seq + aa.get_sequence()
 
         return seq
+
+    def get_pose_sequence(self, model_num=0) -> str:
+        pdb_seq = "".join(
+            [three_to_one(res.get_resname()) for res in struct.get_residues()]
+        )
+        return pdb_seq
 
     def find_chain_breaks(self) -> Dict[Any, List[int]]:
         """

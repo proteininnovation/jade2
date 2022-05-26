@@ -467,9 +467,13 @@ class DashPlot:
         cmd+=";deselect"
         #os.system('pymol '+outdir+"/"+pdb_path_new+f" {native}f"+f" -d '{cmd}' &")
         if native:
-            os.system('pymol ' + outdir + "/" + pdb_path_new + f" {native}" + f" -d '{cmd}' &")
+            cmd = 'pymol ' + outdir + "/" + pdb_path_new + f" {native}" + f" -d '{cmd}' &"
+            print(cmd)
+            os.system(cmd)
         else:
-            os.system('pymol ' + outdir + "/" + pdb_path_new + f" -d '{cmd}' &")
+            cmd = 'pymol ' + outdir + "/" + pdb_path_new + f" -d '{cmd}' &"
+            print(cmd)
+            os.system(cmd)
 
     def copy_decoys(self, x, y, selection, z = None):
         #print("args:",args)
@@ -897,11 +901,12 @@ if __name__ == "__main__":
 
     try:
         if options.debug:
-            app.run_server(debug=True)
+            app.server.run()
+            app.run_server(debug=True, port=8000, host='127.0.0.1')
         else:
             #sys.stdout = open(os.devnull, "w")
             sys.stderr = open(os.devnull, "w")
-            app.run_server(debug=False)
+            app.run_server(debug=False, port=8000, host='127.0.0.1')
     except OSError:
         print("Jade IAE cannot run while previous pymol windows are open or another instance of the app is running.  Please close and restart the app")
 
