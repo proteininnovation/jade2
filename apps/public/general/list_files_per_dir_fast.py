@@ -53,11 +53,12 @@ if __name__ == "__main__":
 
     for d in dirs:
         if not os.path.isdir(d): continue
-        count = sum(1 for entry in listdir(d) if isfile(join(d, entry)))
+        count = sum(1 for entry in listdir(d) if isfile(join(d, entry))) -1
         #pdbs = get_matching_pdbs(d, options.pattern, options.ext)
         #count = len(pdbs)
+        print(d, count)
         if count > 0:
-            print(d, count)
+
             counts.append(count)
             #if options.delete:
             #    for pdb in pdbs:
