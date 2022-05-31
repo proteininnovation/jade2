@@ -27,7 +27,7 @@ def get_matching_pdbs(directory, pattern, ext='.pdb'):
     return [os.path.basename(f) for f in files]
 
 if __name__ == "__main__":
-    parser = ArgumentParser("Simple script to list all files in all directories (recursively), with some summaries at the end")
+    parser = ArgumentParser("Simple script to list all files in all directories (non-recursively), with some summaries at the end. Pretty slow, needs to be sped up for sure")
 
 
     parser.add_argument("--dir", '-d', help = "Directory to look at")
@@ -39,18 +39,21 @@ if __name__ == "__main__":
 
     counts = []
     dirs = get_directories_recursively(options.dir)
+    print("Found ", len(dirs), "Directories")
+
     for d in dirs:
         if not os.path.isdir(d): continue
 
         pdbs = get_matching_pdbs(d, options.pattern, options.ext)
         count = len(pdbs)
-        counts.append(count)
         if count > 0:
             print(d, count)
+            counts.append(count)
             if options.delete:
                 for pdb in pdbs:
                     os.remove(d+'/'+pdb)
 
+    print("Total non-zero directories", len(counts))
     print('mean', numpy.mean(counts))
     print('min', numpy.min(counts))
     print('max', numpy.max(counts))
