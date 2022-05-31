@@ -2,6 +2,8 @@
 from argparse import ArgumentParser
 import glob,os,sys
 import numpy
+from os import listdir
+from os.path import isfile, join
 
 def get_directories_recursively(inpath):
     """
@@ -26,32 +28,40 @@ def get_matching_pdbs(directory, pattern, ext='.pdb'):
     files = glob.glob(directory+"/"+'*'+pattern+'*'+ext)
     return [os.path.basename(f) for f in files]
 
+def get_directories(rootdir):
+    dirs = []
+    for it in os.scandir(rootdir):
+        if it.is_dir():
+            dirs.append(it.path)
+    return dirs
+
 if __name__ == "__main__":
     parser = ArgumentParser("Simple script to list all files in all directories (non-recursively), with some summaries at the end. Pretty slow, needs to be sped up for sure")
 
 
     parser.add_argument("--dir", '-d', help = "Directory to look at")
-    parser.add_argument("--ext", '-e', default='.pdb', help = "Extension to look for")
-    parser.add_argument("--pattern", '-p', default="", help = "Any pattern to match (simple")
-    parser.add_argument('--delete', '-t', action = 'store_true', default=False, help = "Delete the pdbs found?  Default false")
+    #parser.add_argument("--ext", '-e', default='.pdb', help = "Extension to look for")
+    #parser.add_argument("--pattern", '-p', default="", help = "Any pattern to match (simple")
+    #parser.add_argument('--delete', '-t', action = 'store_true', default=False, help = "Delete the pdbs found?  Default false")
 
     options = parser.parse_args()
 
     counts = []
-    dirs = get_directories_recursively(options.dir)
+    dirs = get_directories(options.dir)
+
     print("Found ", len(dirs), "Directories")
 
     for d in dirs:
         if not os.path.isdir(d): continue
-
-        pdbs = get_matching_pdbs(d, options.pattern, options.ext)
-        count = len(pdbs)
+        count = sum(1 for entry in listdir(d) if isfile(join(d, entry)))
+        #pdbs = get_matching_pdbs(d, options.pattern, options.ext)
+        #count = len(pdbs)
         if count > 0:
             print(d, count)
             counts.append(count)
-            if options.delete:
-                for pdb in pdbs:
-                    os.remove(d+'/'+pdb)
+            #if options.delete:
+            #    for pdb in pdbs:
+            #        os.remove(d+'/'+pdb)
 
     print("Total non-zero directories", len(counts))
     print('mean', numpy.mean(counts))
